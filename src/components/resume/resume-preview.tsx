@@ -4,13 +4,14 @@ import { formatDateRange } from '@/lib/utils'
 interface ResumePreviewProps {
   content: TailoredContent
   profile: Profile
+  showSummary?: boolean
 }
 
-export default function ResumePreview({ content, profile }: ResumePreviewProps) {
+export default function ResumePreview({ content, profile, showSummary = true }: ResumePreviewProps) {
   const renderSection = (sectionKey: string) => {
     switch (sectionKey) {
       case 'summary':
-        return content.summary ? (
+        return (content.summary && showSummary) ? (
           <section key="summary" className="mb-5">
             <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider border-b border-gray-300 pb-1 mb-2">
               Professional Summary

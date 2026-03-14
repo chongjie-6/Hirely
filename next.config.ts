@@ -1,14 +1,9 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   turbopack: {
-    resolveAlias: {
-      canvas: { browser: './empty-module.js' },
-    },
-  },
-  webpack: (config) => {
-    config.resolve.alias.canvas = false
-    return config
+    root: path.join(__dirname),
   },
   transpilePackages: ['@react-pdf/renderer'],
 };

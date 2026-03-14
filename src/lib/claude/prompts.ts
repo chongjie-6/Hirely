@@ -8,7 +8,7 @@ Rules:
 2. Reword experience bullet points to emphasize relevant skills and achievements that match the job description. Use strong action verbs and quantify results where the original data supports it.
 3. Reorder skills to place the most relevant ones first.
 4. Reorder projects to place the most relevant ones first.
-5. Generate a tailored professional summary (2-3 sentences) that positions the candidate for this specific role.
+5. Generate a tailored professional summary (2-3 sentences) based on the job description that positions the candidate for this specific role. The summary should highlight the candidate's most relevant qualifications and experience as they relate to what the job is looking for. Do NOT simply reuse the candidate's existing summary — write a new one specifically targeted at this job.
 6. Suggest an optimal section ordering based on what the job values most.
 7. Provide a match score (0-100) indicating how well the candidate's background aligns with the job requirements.
 8. Provide 2-4 actionable suggestions for how the candidate could strengthen their application.

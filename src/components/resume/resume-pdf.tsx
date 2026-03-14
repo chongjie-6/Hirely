@@ -93,15 +93,16 @@ const styles = StyleSheet.create({
 interface ResumePDFProps {
   content: TailoredContent
   profile: Profile
+  showSummary?: boolean
 }
 
-export default function ResumePDF({ content, profile }: ResumePDFProps) {
+export default function ResumePDF({ content, profile, showSummary = true }: ResumePDFProps) {
   const sectionOrder = content.sectionOrder ?? ['summary', 'experience', 'skills', 'projects', 'education']
 
   const renderSection = (key: string) => {
     switch (key) {
       case 'summary':
-        return content.summary ? (
+        return (content.summary && showSummary) ? (
           <View key="summary">
             <Text style={styles.sectionTitle}>Professional Summary</Text>
             <Text style={styles.summaryText}>{content.summary}</Text>

@@ -10,21 +10,20 @@ import ResumePreview from '@/components/resume/resume-preview'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Download, ArrowLeft, Lightbulb, Loader2 } from 'lucide-react'
+import { Checkbox } from '@/components/ui/checkbox'
+import { ArrowLeft, Lightbulb, Loader2 } from 'lucide-react'
 
-const PDFDownloadLink = dynamic(
-  () => import('@react-pdf/renderer').then(mod => mod.PDFDownloadLink),
+const PDFDownloadButton = dynamic(
+  () => import('@/components/resume/pdf-download-button'),
   { ssr: false }
 )
-
-const ResumePDF = dynamic(() => import('@/components/resume/resume-pdf'), { ssr: false })
 
 export default function ResumePreviewPage() {
   const params = useParams()
   const [resume, setResume] = useState<TailoredResume | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
-  const [pdfReady, setPdfReady] = useState(false)
+  const [showSummary, setShowSummary] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +39,6 @@ export default function ResumePreviewPage() {
       if (resumeRes.data) setResume(resumeRes.data as TailoredResume)
       if (profileRes.data) setProfile(profileRes.data)
       setLoading(false)
-      setTimeout(() => setPdfReady(true), 500)
     }
 
     fetchData()
@@ -98,34 +96,37 @@ export default function ResumePreviewPage() {
           )}
         </div>
 
-        <div>
-          {pdfReady && (
-            <PDFDownloadLink
-              document={<ResumePDF content={content} profile={profile} />}
-              fileName={`resume-${resume.job_title?.replace(/\s+/g, '-').toLowerCase() || 'tailored'}.pdf`}
-            >
-              {({ loading: pdfLoading }) => (
-                <Button disabled={pdfLoading}>
-                  {pdfLoading ? (
-                    <><Loader2 className="size-4 animate-spin mr-2" /> Generating...</>
-                  ) : (
-                    <><Download className="size-4 mr-1" /> Download PDF</>
-                  )}
-                </Button>
-              )}
-            </PDFDownloadLink>
-          )}
-        </div>
+        <PDFDownloadButton
+          content={content}
+          profile={profile}
+          fileName={`resume-${resume.job_title?.replace(/\s+/g, '-').toLowerCase() || 'tailored'}.pdf`}
+          showSummary={showSummary}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Resume Preview */}
         <div className="lg:col-span-3">
-          <ResumePreview content={content} profile={profile} />
+          <ResumePreview content={content} profile={profile} showSummary={showSummary} />
         </div>
 
         {/* Sidebar */}
         <div className="space-y-4">
+          <Card>
+            <CardContent>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="show-summary"
+                  checked={showSummary}
+                  onCheckedChange={(checked) => setShowSummary(checked === true)}
+                />
+                <label htmlFor="show-summary" className="text-sm cursor-pointer select-none">
+                  Include professional summary
+                </label>
+              </div>
+            </CardContent>
+          </Card>
+
           {suggestions.length > 0 && (
             <Card>
               <CardHeader>
