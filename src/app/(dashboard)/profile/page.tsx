@@ -5,15 +5,16 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { profileSchema, type ProfileFormData } from '@/lib/validators/schemas'
 import { useProfile } from '@/hooks/use-profile'
-import { useToast } from '@/components/ui/toast'
-import Button from '@/components/ui/button'
-import Input from '@/components/ui/input'
-import Textarea from '@/components/ui/textarea'
-import Card, { CardContent, CardHeader } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 
 export default function ProfilePage() {
   const { profile, loading, updateProfile } = useProfile()
-  const { addToast } = useToast()
 
   const {
     register,
@@ -41,15 +42,15 @@ export default function ProfilePage() {
   const onSubmit = async (data: ProfileFormData) => {
     try {
       await updateProfile(data)
-      addToast('Profile saved successfully', 'success')
+      toast.success('Profile saved successfully')
     } catch {
-      addToast('Failed to save profile', 'error')
+      toast.error('Failed to save profile')
     }
   }
 
   if (loading) {
     return <div className="flex items-center justify-center h-64">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+      <Loader2 className="size-6 animate-spin text-muted-foreground" />
     </div>
   }
 
@@ -57,69 +58,55 @@ export default function ProfilePage() {
     <div className="max-w-2xl">
       <Card>
         <CardHeader>
-          <h2 className="text-lg font-semibold">Personal Information</h2>
-          <p className="text-sm text-gray-500">This information will appear at the top of your resume.</p>
+          <CardTitle>Personal Information</CardTitle>
+          <CardDescription>This information will appear at the top of your resume.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                id="full_name"
-                label="Full Name"
-                placeholder="John Doe"
-                error={errors.full_name?.message}
-                {...register('full_name')}
-              />
-              <Input
-                id="email"
-                type="email"
-                label="Email"
-                placeholder="john@example.com"
-                error={errors.email?.message}
-                {...register('email')}
-              />
-              <Input
-                id="phone"
-                label="Phone"
-                placeholder="+1 (555) 000-0000"
-                error={errors.phone?.message}
-                {...register('phone')}
-              />
-              <Input
-                id="location"
-                label="Location"
-                placeholder="San Francisco, CA"
-                error={errors.location?.message}
-                {...register('location')}
-              />
-              <Input
-                id="linkedin_url"
-                label="LinkedIn URL"
-                placeholder="https://linkedin.com/in/johndoe"
-                error={errors.linkedin_url?.message}
-                {...register('linkedin_url')}
-              />
-              <Input
-                id="portfolio_url"
-                label="Portfolio URL"
-                placeholder="https://johndoe.com"
-                error={errors.portfolio_url?.message}
-                {...register('portfolio_url')}
+              <div className="space-y-2">
+                <Label htmlFor="full_name">Full Name</Label>
+                <Input id="full_name" placeholder="John Doe" {...register('full_name')} />
+                {errors.full_name && <p className="text-sm text-destructive">{errors.full_name.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" placeholder="john@example.com" {...register('email')} />
+                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone</Label>
+                <Input id="phone" placeholder="+1 (555) 000-0000" {...register('phone')} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="location">Location</Label>
+                <Input id="location" placeholder="San Francisco, CA" {...register('location')} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="linkedin_url">LinkedIn URL</Label>
+                <Input id="linkedin_url" placeholder="https://linkedin.com/in/johndoe" {...register('linkedin_url')} />
+                {errors.linkedin_url && <p className="text-sm text-destructive">{errors.linkedin_url.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="portfolio_url">Portfolio URL</Label>
+                <Input id="portfolio_url" placeholder="https://johndoe.com" {...register('portfolio_url')} />
+                {errors.portfolio_url && <p className="text-sm text-destructive">{errors.portfolio_url.message}</p>}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="summary">Professional Summary</Label>
+              <Textarea
+                id="summary"
+                placeholder="Brief overview of your professional background and career goals..."
+                rows={4}
+                {...register('summary')}
               />
             </div>
 
-            <Textarea
-              id="summary"
-              label="Professional Summary"
-              placeholder="Brief overview of your professional background and career goals..."
-              rows={4}
-              error={errors.summary?.message}
-              {...register('summary')}
-            />
-
             <div className="flex justify-end">
-              <Button type="submit" loading={isSubmitting}>
-                Save Profile
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? <><Loader2 className="size-4 animate-spin mr-2" /> Saving...</> : 'Save Profile'}
               </Button>
             </div>
           </form>

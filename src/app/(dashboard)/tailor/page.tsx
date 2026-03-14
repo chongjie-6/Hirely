@@ -10,16 +10,16 @@ import { useExperiences } from '@/hooks/use-experiences'
 import { useEducation } from '@/hooks/use-education'
 import { useSkills } from '@/hooks/use-skills'
 import { useProjects } from '@/hooks/use-projects'
-import { useToast } from '@/components/ui/toast'
-import Button from '@/components/ui/button'
-import Input from '@/components/ui/input'
-import Textarea from '@/components/ui/textarea'
-import Card, { CardContent, CardHeader } from '@/components/ui/card'
-import { Sparkles, CheckCircle, AlertCircle } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { toast } from 'sonner'
+import { Sparkles, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
 
 export default function TailorPage() {
   const router = useRouter()
-  const { addToast } = useToast()
   const [tailoring, setTailoring] = useState(false)
 
   const { profile } = useProfile()
@@ -48,7 +48,7 @@ export default function TailorPage() {
 
   const onSubmit = async (data: TailorFormData) => {
     if (!hasMinimumData) {
-      addToast('Please add at least your profile name and some experience or skills first', 'error')
+      toast.error('Please add at least your profile name and some experience or skills first')
       return
     }
 
@@ -66,10 +66,10 @@ export default function TailorPage() {
       }
 
       const result = await response.json()
-      addToast('Resume tailored successfully!', 'success')
+      toast.success('Resume tailored successfully!')
       router.push(`/resume/${result.id}`)
     } catch (error) {
-      addToast(error instanceof Error ? error.message : 'Something went wrong', 'error')
+      toast.error(error instanceof Error ? error.message : 'Something went wrong')
     } finally {
       setTailoring(false)
     }
@@ -82,46 +82,49 @@ export default function TailorPage() {
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <h2 className="text-lg font-semibold flex items-center gap-2">
-                <Sparkles size={20} className="text-blue-600" />
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="size-5 text-primary" />
                 Tailor Your Resume
-              </h2>
-              <p className="text-sm text-gray-500">Paste a job description and we&apos;ll tailor your resume to match.</p>
+              </CardTitle>
+              <CardDescription>Paste a job description and we&apos;ll tailor your resume to match.</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    id="job_title"
-                    label="Job Title (optional)"
-                    placeholder="Senior Software Engineer"
-                    {...register('job_title')}
-                  />
-                  <Input
-                    id="company_name"
-                    label="Company (optional)"
-                    placeholder="Google"
-                    {...register('company_name')}
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="job_title">Job Title (optional)</Label>
+                    <Input id="job_title" placeholder="Senior Software Engineer" {...register('job_title')} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="company_name">Company (optional)</Label>
+                    <Input id="company_name" placeholder="Google" {...register('company_name')} />
+                  </div>
                 </div>
 
-                <Textarea
-                  id="job_description"
-                  label="Job Description"
-                  placeholder="Paste the full job description here..."
-                  rows={12}
-                  error={errors.job_description?.message}
-                  {...register('job_description')}
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="job_description">Job Description</Label>
+                  <Textarea
+                    id="job_description"
+                    placeholder="Paste the full job description here..."
+                    rows={12}
+                    {...register('job_description')}
+                  />
+                  {errors.job_description && (
+                    <p className="text-sm text-destructive">{errors.job_description.message}</p>
+                  )}
+                </div>
 
                 <Button
                   type="submit"
                   size="lg"
                   className="w-full"
-                  loading={tailoring}
-                  disabled={!hasMinimumData}
+                  disabled={tailoring || !hasMinimumData}
                 >
-                  {tailoring ? 'Tailoring with AI...' : 'Tailor My Resume'}
+                  {tailoring ? (
+                    <><Loader2 className="size-4 animate-spin mr-2" /> Tailoring with AI...</>
+                  ) : (
+                    'Tailor My Resume'
+                  )}
                 </Button>
               </form>
             </CardContent>
@@ -132,31 +135,31 @@ export default function TailorPage() {
         <div>
           <Card>
             <CardHeader>
-              <h3 className="font-semibold">Your Resume Data</h3>
-              <p className="text-xs text-gray-400">We&apos;ll use this to tailor your resume</p>
+              <CardTitle>Your Resume Data</CardTitle>
+              <CardDescription>We&apos;ll use this to tailor your resume</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {sections.map(section => (
                 <div key={section.label} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {section.count > 0 ? (
-                      <CheckCircle size={16} className="text-green-500" />
+                      <CheckCircle className="size-4 text-green-500" />
                     ) : section.needed > 0 ? (
-                      <AlertCircle size={16} className="text-amber-500" />
+                      <AlertCircle className="size-4 text-amber-500" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border-2 border-gray-300" />
+                      <div className="size-4 rounded-full border-2 border-muted-foreground/30" />
                     )}
-                    <span className="text-sm text-gray-700">{section.label}</span>
+                    <span className="text-sm">{section.label}</span>
                   </div>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-muted-foreground">
                     {section.count} {section.count === 1 ? 'entry' : 'entries'}
                   </span>
                 </div>
               ))}
 
               {!hasMinimumData && (
-                <div className="mt-4 p-3 bg-amber-50 rounded-lg">
-                  <p className="text-xs text-amber-700">
+                <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/20 rounded-lg">
+                  <p className="text-xs text-amber-700 dark:text-amber-400">
                     Please add at least your name in Profile and some Experience or Skills before tailoring.
                   </p>
                 </div>

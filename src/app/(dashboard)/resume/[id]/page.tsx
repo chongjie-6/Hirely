@@ -7,12 +7,11 @@ import dynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/client'
 import type { TailoredResume, Profile, TailoredContent } from '@/types/database'
 import ResumePreview from '@/components/resume/resume-preview'
-import Button from '@/components/ui/button'
-import Card, { CardContent, CardHeader } from '@/components/ui/card'
-import Badge from '@/components/ui/badge'
-import { Download, ArrowLeft, Lightbulb } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Download, ArrowLeft, Lightbulb, Loader2 } from 'lucide-react'
 
-// Dynamic import for PDF (only loaded client-side when needed)
 const PDFDownloadLink = dynamic(
   () => import('@react-pdf/renderer').then(mod => mod.PDFDownloadLink),
   { ssr: false }
@@ -41,8 +40,6 @@ export default function ResumePreviewPage() {
       if (resumeRes.data) setResume(resumeRes.data as TailoredResume)
       if (profileRes.data) setProfile(profileRes.data)
       setLoading(false)
-
-      // Delay PDF readiness to avoid hydration issues
       setTimeout(() => setPdfReady(true), 500)
     }
 
@@ -51,15 +48,15 @@ export default function ResumePreviewPage() {
 
   if (loading) {
     return <div className="flex items-center justify-center h-64">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+      <Loader2 className="size-6 animate-spin text-muted-foreground" />
     </div>
   }
 
   if (!resume || !profile) {
     return (
       <div className="text-center py-16">
-        <p className="text-gray-500">Resume not found.</p>
-        <Link href="/dashboard" className="text-blue-600 hover:underline mt-2 inline-block">
+        <p className="text-muted-foreground">Resume not found.</p>
+        <Link href="/dashboard" className="text-primary hover:underline mt-2 inline-block">
           Back to Dashboard
         </Link>
       </div>
@@ -69,11 +66,11 @@ export default function ResumePreviewPage() {
   const content = resume.tailored_content as TailoredContent
   const suggestions = content.suggestions ?? []
 
-  const getScoreColor = (score: number | null) => {
-    if (!score) return 'default'
-    if (score >= 80) return 'success' as const
-    if (score >= 60) return 'warning' as const
-    return 'danger' as const
+  const getScoreVariant = (score: number | null) => {
+    if (!score) return 'secondary' as const
+    if (score >= 80) return 'default' as const
+    if (score >= 60) return 'secondary' as const
+    return 'destructive' as const
   }
 
   return (
@@ -81,19 +78,21 @@ export default function ResumePreviewPage() {
       {/* Top Bar */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Link href="/dashboard" className="text-gray-400 hover:text-gray-600">
-            <ArrowLeft size={20} />
+          <Link href="/dashboard">
+            <Button variant="ghost" size="icon">
+              <ArrowLeft className="size-4" />
+            </Button>
           </Link>
           <div>
             <h2 className="text-lg font-semibold">
               {resume.job_title || 'Tailored Resume'}
             </h2>
             {resume.company_name && (
-              <p className="text-sm text-gray-500">{resume.company_name}</p>
+              <p className="text-sm text-muted-foreground">{resume.company_name}</p>
             )}
           </div>
           {resume.match_score !== null && (
-            <Badge variant={getScoreColor(resume.match_score)}>
+            <Badge variant={getScoreVariant(resume.match_score)}>
               {resume.match_score}% match
             </Badge>
           )}
@@ -106,9 +105,12 @@ export default function ResumePreviewPage() {
               fileName={`resume-${resume.job_title?.replace(/\s+/g, '-').toLowerCase() || 'tailored'}.pdf`}
             >
               {({ loading: pdfLoading }) => (
-                <Button loading={pdfLoading} disabled={pdfLoading}>
-                  <Download size={16} className="mr-1" />
-                  {pdfLoading ? 'Generating...' : 'Download PDF'}
+                <Button disabled={pdfLoading}>
+                  {pdfLoading ? (
+                    <><Loader2 className="size-4 animate-spin mr-2" /> Generating...</>
+                  ) : (
+                    <><Download className="size-4 mr-1" /> Download PDF</>
+                  )}
                 </Button>
               )}
             </PDFDownloadLink>
@@ -127,16 +129,16 @@ export default function ResumePreviewPage() {
           {suggestions.length > 0 && (
             <Card>
               <CardHeader>
-                <h3 className="font-semibold flex items-center gap-2">
-                  <Lightbulb size={16} className="text-amber-500" />
+                <CardTitle className="flex items-center gap-2 text-sm">
+                  <Lightbulb className="size-4 text-amber-500" />
                   Suggestions
-                </h3>
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
                   {suggestions.map((suggestion, i) => (
-                    <li key={i} className="text-sm text-gray-600 flex gap-2">
-                      <span className="text-amber-500 mt-0.5">•</span>
+                    <li key={i} className="text-sm text-muted-foreground flex gap-2">
+                      <span className="text-amber-500 mt-0.5 shrink-0">•</span>
                       {suggestion}
                     </li>
                   ))}
@@ -147,10 +149,10 @@ export default function ResumePreviewPage() {
 
           <Card>
             <CardHeader>
-              <h3 className="font-semibold text-sm">Job Description</h3>
+              <CardTitle className="text-sm">Job Description</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-gray-500 max-h-60 overflow-y-auto whitespace-pre-line">
+              <p className="text-xs text-muted-foreground max-h-60 overflow-y-auto whitespace-pre-line">
                 {resume.job_description}
               </p>
             </CardContent>

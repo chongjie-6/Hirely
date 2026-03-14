@@ -5,17 +5,17 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { projectSchema, type ProjectFormData } from '@/lib/validators/schemas'
 import { useProjects } from '@/hooks/use-projects'
-import { useToast } from '@/components/ui/toast'
-import Button from '@/components/ui/button'
-import Input from '@/components/ui/input'
-import Textarea from '@/components/ui/textarea'
-import Card, { CardContent, CardHeader } from '@/components/ui/card'
-import Badge from '@/components/ui/badge'
-import { Plus, Pencil, Trash2, X, ExternalLink } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { toast } from 'sonner'
+import { Plus, Pencil, Trash2, X, ExternalLink, Loader2 } from 'lucide-react'
 
 export default function ProjectsPage() {
   const { projects, loading, addProject, updateProject, deleteProject } = useProjects()
-  const { addToast } = useToast()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [techInput, setTechInput] = useState('')
@@ -40,6 +40,7 @@ export default function ProjectsPage() {
       description: proj.description ?? '',
       live_url: proj.live_url ?? '',
       repo_url: proj.repo_url ?? '',
+      technologies: proj.technologies ?? [],
     })
   }
 
@@ -68,14 +69,14 @@ export default function ProjectsPage() {
       const payload = { ...data, technologies }
       if (editingId) {
         await updateProject(editingId, payload)
-        addToast('Project updated', 'success')
+        toast.success('Project updated')
       } else {
         await addProject({ ...payload, sort_order: projects.length })
-        addToast('Project added', 'success')
+        toast.success('Project added')
       }
       cancelForm()
     } catch {
-      addToast('Failed to save project', 'error')
+      toast.error('Failed to save project')
     }
   }
 
@@ -83,15 +84,15 @@ export default function ProjectsPage() {
     if (!confirm('Delete this project?')) return
     try {
       await deleteProject(id)
-      addToast('Project deleted', 'success')
+      toast.success('Project deleted')
     } catch {
-      addToast('Failed to delete', 'error')
+      toast.error('Failed to delete')
     }
   }
 
   if (loading) {
     return <div className="flex items-center justify-center h-64">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+      <Loader2 className="size-6 animate-spin text-muted-foreground" />
     </div>
   }
 
@@ -100,11 +101,11 @@ export default function ProjectsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold">Projects</h2>
-          <p className="text-sm text-gray-500">{projects.length} projects</p>
+          <p className="text-sm text-muted-foreground">{projects.length} projects</p>
         </div>
         {!showForm && (
           <Button onClick={() => { setShowForm(true); setEditingId(null); reset(); setTechnologies([]); }}>
-            <Plus size={16} className="mr-1" /> Add Project
+            <Plus className="size-4 mr-1" /> Add Project
           </Button>
         )}
       </div>
@@ -113,52 +114,71 @@ export default function ProjectsPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <h3 className="font-medium">{editingId ? 'Edit' : 'Add'} Project</h3>
-              <button onClick={cancelForm} className="text-gray-400 hover:text-gray-600">
-                <X size={20} />
-              </button>
+              <CardTitle>{editingId ? 'Edit' : 'Add'} Project</CardTitle>
+              <Button variant="ghost" size="icon" onClick={cancelForm}>
+                <X className="size-4" />
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <Input id="name" label="Project Name" error={errors.name?.message} {...register('name')} />
-              <Textarea
-                id="description"
-                label="Description"
-                placeholder="What does this project do? What problem does it solve?"
-                rows={3}
-                {...register('description')}
-              />
+              <div className="space-y-2">
+                <Label htmlFor="name">Project Name</Label>
+                <Input id="name" {...register('name')} />
+                {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  placeholder="What does this project do? What problem does it solve?"
+                  rows={3}
+                  {...register('description')}
+                />
+              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Technologies</label>
+              <div className="space-y-2">
+                <Label>Technologies</Label>
                 <div className="flex gap-2">
-                  <input
+                  <Input
                     value={techInput}
                     onChange={e => setTechInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTech(); } }}
                     placeholder="e.g. React, Node.js"
-                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  <Button type="button" variant="secondary" onClick={addTech}>Add</Button>
+                  <Button type="button" variant="outline" onClick={addTech}>Add</Button>
                 </div>
                 {technologies.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
                     {technologies.map(tech => (
-                      <Badge key={tech} onRemove={() => removeTech(tech)}>{tech}</Badge>
+                      <Badge key={tech} variant="secondary" className="gap-1 pr-1">
+                        {tech}
+                        <button onClick={() => removeTech(tech)} className="ml-0.5 inline-flex items-center justify-center rounded-full hover:bg-foreground/10 size-4">
+                          <X className="size-3" />
+                        </button>
+                      </Badge>
                     ))}
                   </div>
                 )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input id="live_url" label="Live URL" placeholder="https://..." {...register('live_url')} />
-                <Input id="repo_url" label="Repository URL" placeholder="https://github.com/..." {...register('repo_url')} />
+                <div className="space-y-2">
+                  <Label htmlFor="live_url">Live URL</Label>
+                  <Input id="live_url" placeholder="https://..." {...register('live_url')} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="repo_url">Repository URL</Label>
+                  <Input id="repo_url" placeholder="https://github.com/..." {...register('repo_url')} />
+                </div>
               </div>
 
               <div className="flex justify-end gap-2">
-                <Button type="button" variant="secondary" onClick={cancelForm}>Cancel</Button>
-                <Button type="submit" loading={isSubmitting}>{editingId ? 'Update' : 'Add'}</Button>
+                <Button type="button" variant="outline" onClick={cancelForm}>Cancel</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? <Loader2 className="size-4 animate-spin mr-2" /> : null}
+                  {editingId ? 'Update' : 'Add'}
+                </Button>
               </div>
             </form>
           </CardContent>
@@ -168,7 +188,7 @@ export default function ProjectsPage() {
       {projects.length === 0 && !showForm && (
         <Card>
           <CardContent className="py-12 text-center">
-            <p className="text-gray-500">No projects added yet.</p>
+            <p className="text-muted-foreground">No projects added yet.</p>
           </CardContent>
         </Card>
       )}
@@ -178,37 +198,37 @@ export default function ProjectsPage() {
           <CardContent>
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900">{proj.name}</h3>
+                <h3 className="font-semibold">{proj.name}</h3>
                 {proj.description && (
-                  <p className="text-sm text-gray-600 mt-1">{proj.description}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{proj.description}</p>
                 )}
                 {proj.technologies?.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {proj.technologies.map(tech => (
-                      <Badge key={tech}>{tech}</Badge>
+                      <Badge key={tech} variant="secondary">{tech}</Badge>
                     ))}
                   </div>
                 )}
                 <div className="flex gap-3 mt-2">
                   {proj.live_url && (
-                    <a href={proj.live_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline inline-flex items-center gap-1">
-                      <ExternalLink size={12} /> Live
+                    <a href={proj.live_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                      <ExternalLink className="size-3" /> Live
                     </a>
                   )}
                   {proj.repo_url && (
-                    <a href={proj.repo_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline inline-flex items-center gap-1">
-                      <ExternalLink size={12} /> Repo
+                    <a href={proj.repo_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline inline-flex items-center gap-1">
+                      <ExternalLink className="size-3" /> Repo
                     </a>
                   )}
                 </div>
               </div>
               <div className="flex gap-1 ml-4">
-                <button onClick={() => startEditing(proj)} className="p-2 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50">
-                  <Pencil size={16} />
-                </button>
-                <button onClick={() => handleDelete(proj.id)} className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50">
-                  <Trash2 size={16} />
-                </button>
+                <Button variant="ghost" size="icon" onClick={() => startEditing(proj)}>
+                  <Pencil className="size-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => handleDelete(proj.id)}>
+                  <Trash2 className="size-4 text-destructive" />
+                </Button>
               </div>
             </div>
           </CardContent>

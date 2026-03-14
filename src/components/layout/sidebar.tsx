@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import {
   LayoutDashboard,
   User,
@@ -13,6 +15,7 @@ import {
   Sparkles,
   LogOut,
 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -36,9 +39,9 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="hidden md:flex md:flex-col md:w-64 bg-white border-r border-gray-200 min-h-screen">
+    <aside className="hidden md:flex md:flex-col md:w-64 bg-card border-r border-border min-h-screen">
       <div className="p-6">
-        <Link href="/dashboard" className="text-xl font-bold text-blue-600">
+        <Link href="/dashboard" className="text-xl font-bold text-primary">
           Hirely
         </Link>
       </div>
@@ -48,30 +51,25 @@ export default function Sidebar() {
           const isActive = pathname === item.href
           const Icon = item.icon
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-blue-50 text-blue-700'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-              }`}
-            >
-              <Icon size={20} />
-              {item.label}
+            <Link key={item.href} href={item.href}>
+              <Button
+                variant={isActive ? 'secondary' : 'ghost'}
+                className={cn('w-full justify-start gap-3', isActive && 'font-semibold')}
+              >
+                <Icon className="size-4" />
+                {item.label}
+              </Button>
             </Link>
           )
         })}
       </nav>
 
-      <div className="p-3 border-t border-gray-200">
-        <button
-          onClick={handleSignOut}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors w-full"
-        >
-          <LogOut size={20} />
+      <div className="p-3">
+        <Separator className="mb-3" />
+        <Button variant="ghost" className="w-full justify-start gap-3" onClick={handleSignOut}>
+          <LogOut className="size-4" />
           Sign Out
-        </button>
+        </Button>
       </div>
     </aside>
   )
