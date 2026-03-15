@@ -17,7 +17,7 @@ export async function getProfile(): Promise<Profile | null> {
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
-        .single()
+        .maybeSingle()
       return data
     },
     [`profile-${userId}`],
@@ -113,7 +113,7 @@ export async function getTailoredResume(id: string): Promise<TailoredResume | nu
         .from('tailored_resumes')
         .select('*')
         .eq('id', id)
-        .single()
+        .maybeSingle()
       return data as TailoredResume | null
     },
     [`resume-${id}`],

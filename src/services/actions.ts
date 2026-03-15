@@ -21,8 +21,7 @@ export async function updateProfile(updates: Partial<Profile>) {
 
   const { data, error } = await supabase
     .from('profiles')
-    .update({ ...updates, updated_at: new Date().toISOString() })
-    .eq('user_id', userId)
+    .upsert({ ...updates, user_id: userId, updated_at: new Date().toISOString() }, { onConflict: 'user_id' })
     .select()
     .single()
 
@@ -202,7 +201,7 @@ export async function tailorResume(input: {
 
   // Fetch all user resume data in parallel
   const [profileRes, experiencesRes, educationRes, skillsRes, projectsRes] = await Promise.all([
-    supabase.from('profiles').select('*').eq('user_id', userId).single(),
+    supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
     supabase.from('experiences').select('*').eq('user_id', userId).order('sort_order'),
     supabase.from('education').select('*').eq('user_id', userId).order('sort_order'),
     supabase.from('skills').select('*').eq('user_id', userId),

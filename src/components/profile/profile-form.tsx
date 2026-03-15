@@ -88,7 +88,7 @@ export default function ProfileForm({ profile }: { profile: Profile | null }) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="summary">Professional Summary</Label>
+              <Label htmlFor="summary">Professional Summary <span className="text-muted-foreground font-normal">(optional)</span></Label>
               <Textarea
                 id="summary"
                 placeholder="Brief overview of your professional background and career goals..."

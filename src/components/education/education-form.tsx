@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { educationSchema, type EducationFormData } from '@/lib/validators/schemas'
 import { addEducation, updateEducation, deleteEducation } from '@/services/actions'
@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
+import { MonthPicker } from '@/components/ui/month-picker'
 import { Plus, Pencil, Trash2, X, Loader2 } from 'lucide-react'
 
 export default function EducationList({ education: initialEducation }: { education: Education[] }) {
@@ -24,6 +25,7 @@ export default function EducationList({ education: initialEducation }: { educati
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<EducationFormData>({
     resolver: zodResolver(educationSchema),
@@ -122,12 +124,24 @@ export default function EducationList({ education: initialEducation }: { educati
                   <Input id="gpa" placeholder="3.8" {...register('gpa')} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="start_date">Start Date</Label>
-                  <Input id="start_date" type="date" {...register('start_date')} />
+                  <Label>Start Date</Label>
+                  <Controller
+                    control={control}
+                    name="start_date"
+                    render={({ field }) => (
+                      <MonthPicker value={field.value} onChange={field.onChange} placeholder="Select start" />
+                    )}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="end_date">End Date</Label>
-                  <Input id="end_date" type="date" {...register('end_date')} />
+                  <Label>End Date</Label>
+                  <Controller
+                    control={control}
+                    name="end_date"
+                    render={({ field }) => (
+                      <MonthPicker value={field.value} onChange={field.onChange} placeholder="Select end" />
+                    )}
+                  />
                 </div>
               </div>
               <div className="space-y-2">
