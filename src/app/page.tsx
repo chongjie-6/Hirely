@@ -9,7 +9,7 @@ export default function LandingPage() {
       {/* Nav */}
       <nav className="border-b border-border">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <span className="text-xl font-bold text-primary">Hirely</span>
+          <span className="text-2xl font-bold text-primary">Hirely</span>
           <div className="flex items-center gap-3">
             <Link href="/login">
               <Button variant="ghost">Log In</Button>
@@ -23,21 +23,21 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="max-w-4xl mx-auto px-4 py-24 text-center">
-        <h1 className="text-5xl font-bold leading-tight">
+        <h1 className="text-6xl font-bold leading-tight">
           Tailor your resume to
           <br />
           <span className="text-primary">any job in seconds</span>
         </h1>
-        <p className="mt-6 text-xl text-muted-foreground max-w-2xl mx-auto">
+        <p className="mt-6 text-2xl text-muted-foreground max-w-2xl mx-auto">
           Paste a job description and let AI customize your resume to highlight
           the most relevant skills and experience. Stand out to recruiters.
         </p>
         <div className="mt-10 flex items-center justify-center gap-4">
           <Link href="/signup">
-            <Button size="lg" className="text-base px-8">Get Started Free</Button>
+            <Button size="lg" className="text-lg px-8">Get Started Free</Button>
           </Link>
           <Link href="/login">
-            <Button variant="outline" size="lg" className="text-base px-8">Log In</Button>
+            <Button variant="outline" size="lg" className="text-lg px-8">Log In</Button>
           </Link>
         </div>
       </section>
@@ -45,7 +45,7 @@ export default function LandingPage() {
       {/* How it works */}
       <section className="bg-muted/50 py-20">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
+          <h2 className="text-4xl font-bold text-center mb-12">
             How it works
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -53,7 +53,7 @@ export default function LandingPage() {
               <div className="size-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <FileText className="size-7 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">1. Add your experience</h3>
+              <h3 className="text-xl font-semibold mb-2">1. Add your experience</h3>
               <p className="text-muted-foreground">
                 Enter your work history, education, skills, and projects. Do it once, reuse it forever.
               </p>
@@ -62,7 +62,7 @@ export default function LandingPage() {
               <div className="size-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Sparkles className="size-7 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">2. Paste a job description</h3>
+              <h3 className="text-xl font-semibold mb-2">2. Paste a job description</h3>
               <p className="text-muted-foreground">
                 Copy any job posting and our AI analyzes what the employer is looking for.
               </p>
@@ -71,7 +71,7 @@ export default function LandingPage() {
               <div className="size-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Download className="size-7 text-primary" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">3. Get your tailored resume</h3>
+              <h3 className="text-xl font-semibold mb-2">3. Get your tailored resume</h3>
               <p className="text-muted-foreground">
                 Download a perfectly tailored PDF resume that highlights your most relevant qualifications.
               </p>
@@ -83,7 +83,7 @@ export default function LandingPage() {
       {/* Features */}
       <section className="py-20">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">
+          <h2 className="text-4xl font-bold text-center mb-12">
             Why Hirely?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -96,7 +96,7 @@ export default function LandingPage() {
               <Card key={feature.title}>
                 <CardContent>
                   <h3 className="font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.desc}</p>
+                  <p className="text-base text-muted-foreground">{feature.desc}</p>
                 </CardContent>
               </Card>
             ))}
@@ -106,7 +106,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-border py-8">
-        <div className="max-w-6xl mx-auto px-4 text-center text-sm text-muted-foreground">
+        <div className="max-w-6xl mx-auto px-4 text-center text-base text-muted-foreground">
           Built with Next.js, Supabase, and Claude AI
         </div>
       </footer>

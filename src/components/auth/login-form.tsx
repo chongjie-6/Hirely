@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/services/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -41,7 +41,7 @@ export default function LoginForm() {
     <div className="w-full max-w-md mx-auto">
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Welcome back</CardTitle>
+          <CardTitle className="text-3xl">Welcome back</CardTitle>
           <CardDescription>Sign in to your Hirely account</CardDescription>
         </CardHeader>
         <CardContent>
@@ -51,7 +51,7 @@ export default function LoginForm() {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-border" />
             </div>
-            <div className="relative flex justify-center text-sm">
+            <div className="relative flex justify-center text-base">
               <span className="bg-card px-4 text-muted-foreground">or</span>
             </div>
           </div>
@@ -86,7 +86,7 @@ export default function LoginForm() {
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-muted-foreground">
+          <p className="mt-6 text-center text-base text-muted-foreground">
             Don&apos;t have an account?{' '}
             <Link href="/signup" className="text-primary hover:underline font-medium">
               Sign up

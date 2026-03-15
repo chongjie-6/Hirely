@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/services/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -57,7 +57,7 @@ export default function Header() {
             >
               <Menu className="size-5" />
             </Button>
-            <h1 className="text-lg font-semibold">
+            <h1 className="text-xl font-semibold">
               {currentPage?.label ?? 'Dashboard'}
             </h1>
           </div>
@@ -70,7 +70,7 @@ export default function Header() {
           <div className="fixed inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
           <div className="fixed left-0 top-0 bottom-0 w-64 bg-card shadow-xl">
             <div className="flex items-center justify-between p-6">
-              <span className="text-xl font-bold text-primary">Hirely</span>
+              <span className="text-2xl font-bold text-primary">Hirely</span>
               <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(false)}>
                 <X className="size-5" />
               </Button>
