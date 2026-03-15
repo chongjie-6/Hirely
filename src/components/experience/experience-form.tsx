@@ -52,8 +52,8 @@ export default function ExperienceList({
     reset({
       company: exp.company,
       title: exp.title,
-      start_date: exp.start_date ?? "",
-      end_date: exp.end_date ?? "",
+      start_date: exp.start_date?.slice(0, 7) ?? "",
+      end_date: exp.end_date?.slice(0, 7) ?? "",
       is_current: exp.is_current,
       description: exp.description ?? "",
     });
@@ -73,7 +73,12 @@ export default function ExperienceList({
     });
   };
 
-  const onSubmit = async (data: ExperienceFormData) => {
+  const onSubmit = async (raw: ExperienceFormData) => {
+    const data = {
+      ...raw,
+      start_date: raw.start_date ? `${raw.start_date}-01` : null,
+      end_date: raw.end_date ? `${raw.end_date}-01` : null,
+    };
     try {
       if (editingId) {
         const updated = await updateExperience(editingId, data);
@@ -206,7 +211,7 @@ export default function ExperienceList({
                             field.onChange(checked);
                             setIsCurrent(checked === true);
                           }}
-                          className="rounded-full"
+                          className="rounded-sm"
                         />
                         I currently work here
                       </label>

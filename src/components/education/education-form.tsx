@@ -38,8 +38,8 @@ export default function EducationList({ education: initialEducation }: { educati
       school: edu.school,
       degree: edu.degree ?? '',
       field_of_study: edu.field_of_study ?? '',
-      start_date: edu.start_date ?? '',
-      end_date: edu.end_date ?? '',
+      start_date: edu.start_date?.slice(0, 7) ?? '',
+      end_date: edu.end_date?.slice(0, 7) ?? '',
       gpa: edu.gpa ?? '',
       description: edu.description ?? '',
     })
@@ -51,7 +51,13 @@ export default function EducationList({ education: initialEducation }: { educati
     reset()
   }
 
-  const onSubmit = async (data: EducationFormData) => {
+  const onSubmit = async (raw: EducationFormData) => {
+    const data = {
+      ...raw,
+      start_date: raw.start_date ? `${raw.start_date}-01` : null,
+      end_date: raw.end_date ? `${raw.end_date}-01` : null,
+      gpa: raw.gpa || null,
+    }
     try {
       if (editingId) {
         const updated = await updateEducation(editingId, data)
@@ -120,11 +126,11 @@ export default function EducationList({ education: initialEducation }: { educati
                   <Input id="field_of_study" placeholder="Computer Science" {...register('field_of_study')} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="gpa">GPA</Label>
+                  <Label htmlFor="gpa">GPA <span className="text-muted-foreground font-normal">(optional)</span></Label>
                   <Input id="gpa" placeholder="3.8" {...register('gpa')} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Start Date</Label>
+                  <Label>Start Date <span className="text-muted-foreground font-normal">(optional)</span></Label>
                   <Controller
                     control={control}
                     name="start_date"
@@ -134,7 +140,7 @@ export default function EducationList({ education: initialEducation }: { educati
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>End Date</Label>
+                  <Label>End Date <span className="text-muted-foreground font-normal">(optional)</span></Label>
                   <Controller
                     control={control}
                     name="end_date"
@@ -145,7 +151,7 @@ export default function EducationList({ education: initialEducation }: { educati
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Description <span className="text-muted-foreground font-normal">(optional)</span></Label>
                 <Textarea
                   id="description"
                   placeholder="Relevant coursework, honors, activities..."

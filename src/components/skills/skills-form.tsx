@@ -61,11 +61,13 @@ export default function SkillsList({ skills: initialSkills }: { skills: Skill[] 
             </div>
             <Select value={category} onValueChange={(v) => setCategory(v as 'technical' | 'soft')}>
               <SelectTrigger className="w-35">
-                <SelectValue />
+                <SelectValue>
+                  {category === 'technical' ? 'Technical' : 'Soft Skill'}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Technical">Technical</SelectItem>
-                <SelectItem value="Soft">Soft Skill</SelectItem>
+                <SelectItem value="technical">Technical</SelectItem>
+                <SelectItem value="soft">Soft Skill</SelectItem>
               </SelectContent>
             </Select>
             <Button type="submit">Add</Button>
@@ -85,7 +87,7 @@ export default function SkillsList({ skills: initialSkills }: { skills: Skill[] 
             ) : (
               <div className="flex flex-wrap gap-2">
                 {technicalSkills.map(skill => (
-                  <Badge key={skill.id} variant="secondary" className="gap-1 pr-1">
+                  <Badge key={skill.id} variant="secondary" className="gap-1 pr-1 capitalize">
                     {skill.name}
                     <button
                       onClick={() => handleDelete(skill.id)}
@@ -111,7 +113,7 @@ export default function SkillsList({ skills: initialSkills }: { skills: Skill[] 
             ) : (
               <div className="flex flex-wrap gap-2">
                 {softSkills.map(skill => (
-                  <Badge key={skill.id} variant="outline" className="gap-1 pr-1">
+                  <Badge key={skill.id} variant="outline" className="gap-1 pr-1 capitalize">
                     {skill.name}
                     <button
                       onClick={() => handleDelete(skill.id)}
