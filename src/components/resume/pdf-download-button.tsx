@@ -8,11 +8,26 @@ import type { TailoredContent, Profile } from '@/types/database'
 interface PDFDownloadButtonProps {
   content: TailoredContent
   profile: Profile
-  fileName: string
+  jobTitle?: string | null
   showSummary?: boolean
 }
 
-export default function PDFDownloadButton({ content, profile, fileName, showSummary = true }: PDFDownloadButtonProps) {
+function buildFileName(fullName: string | null, jobTitle?: string | null): string {
+  const namePart = fullName
+    ?.trim()
+    .replace(/\s+/g, '-')
+    .toLowerCase() || 'resume'
+  const positionPart = jobTitle
+    ?.trim()
+    .replace(/\s+/g, '-')
+    .toLowerCase()
+
+  return positionPart
+    ? `${namePart}-${positionPart}.pdf`
+    : `${namePart}-resume.pdf`
+}
+
+export default function PDFDownloadButton({ content, profile, jobTitle, showSummary = true }: PDFDownloadButtonProps) {
   const [generating, setGenerating] = useState(false)
 
   const handleDownload = async () => {
@@ -25,7 +40,7 @@ export default function PDFDownloadButton({ content, profile, fileName, showSumm
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = fileName
+      link.download = buildFileName(profile.full_name, jobTitle)
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)

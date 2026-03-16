@@ -62,7 +62,7 @@ export default function ResumePreviewClient({
         <PDFDownloadButton
           content={content}
           profile={profile}
-          fileName={`resume-${resume.job_title?.replace(/\s+/g, '-').toLowerCase() || 'tailored'}.pdf`}
+          jobTitle={resume.job_title}
           showSummary={showSummary}
         />
       </div>
