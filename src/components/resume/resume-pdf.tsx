@@ -94,9 +94,10 @@ interface ResumePDFProps {
   content: TailoredContent
   profile: Profile
   showSummary?: boolean
+  includeCoverLetter?: boolean
 }
 
-export default function ResumePDF({ content, profile, showSummary = true }: ResumePDFProps) {
+export default function ResumePDF({ content, profile, showSummary = true, includeCoverLetter = false }: ResumePDFProps) {
   const sectionOrder = content.sectionOrder ?? ['summary', 'experience', 'skills', 'projects', 'education']
 
   const renderSection = (key: string) => {
@@ -224,6 +225,23 @@ export default function ResumePDF({ content, profile, showSummary = true }: Resu
         {/* Sections */}
         {sectionOrder.map(section => renderSection(section))}
       </Page>
+
+      {includeCoverLetter && content.coverLetter && (
+        <Page size="A4" style={styles.page}>
+          <View style={styles.header}>
+            <Text style={styles.name}>{profile.full_name}</Text>
+            <View style={styles.contactRow}>
+              {profile.email && <Text>{profile.email}</Text>}
+              {profile.email && profile.phone && <Text>·</Text>}
+              {profile.phone && <Text>{profile.phone}</Text>}
+              {(profile.email || profile.phone) && profile.location && <Text>·</Text>}
+              {profile.location && <Text>{profile.location}</Text>}
+            </View>
+          </View>
+          <Text style={styles.sectionTitle}>Cover Letter</Text>
+          <Text style={{ fontSize: 10, lineHeight: 1.6 }}>{content.coverLetter}</Text>
+        </Page>
+      )}
     </Document>
   )
 }

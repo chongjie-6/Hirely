@@ -10,9 +10,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
-import { Sparkles, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
+import { Sparkles, CheckCircle, AlertCircle, Loader2, FileText } from 'lucide-react'
 
 interface ResumeDataSummary {
   hasProfile: boolean
@@ -26,6 +27,8 @@ interface ResumeDataSummary {
 export default function TailorForm({ summary }: { summary: ResumeDataSummary }) {
   const router = useRouter()
   const [tailoring, setTailoring] = useState(false)
+
+  const [includeCoverLetter, setIncludeCoverLetter] = useState(false)
 
   const {
     register,
@@ -51,7 +54,7 @@ export default function TailorForm({ summary }: { summary: ResumeDataSummary }) 
 
     setTailoring(true)
     try {
-      const result = await tailorResume(data)
+      const result = await tailorResume({ ...data, include_cover_letter: includeCoverLetter })
       toast.success('Resume tailored successfully!')
       router.push(`/resume/${result.id}`)
     } catch (error) {
@@ -99,6 +102,18 @@ export default function TailorForm({ summary }: { summary: ResumeDataSummary }) 
                   )}
                 </div>
 
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="include-cover-letter"
+                    checked={includeCoverLetter}
+                    onCheckedChange={(checked) => setIncludeCoverLetter(checked === true)}
+                  />
+                  <label htmlFor="include-cover-letter" className="text-base cursor-pointer select-none flex items-center gap-1.5">
+                    <FileText className="size-4 text-muted-foreground" />
+                    Also generate a cover letter
+                  </label>
+                </div>
+
                 <Button
                   type="submit"
                   size="lg"
@@ -108,7 +123,7 @@ export default function TailorForm({ summary }: { summary: ResumeDataSummary }) 
                   {tailoring ? (
                     <><Loader2 className="size-4 animate-spin mr-2" /> Tailoring with AI...</>
                   ) : (
-                    'Tailor My Resume'
+                    includeCoverLetter ? 'Tailor Resume & Cover Letter' : 'Tailor My Resume'
                   )}
                 </Button>
               </form>

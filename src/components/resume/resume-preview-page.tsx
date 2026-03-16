@@ -9,10 +9,15 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { ArrowLeft, Lightbulb } from 'lucide-react'
+import { ArrowLeft, Lightbulb, FileText } from 'lucide-react'
 
 const PDFDownloadButton = dynamic(
   () => import('@/components/resume/pdf-download-button'),
+  { ssr: false }
+)
+
+const CoverLetterDownloadButton = dynamic(
+  () => import('@/components/resume/cover-letter-download-button'),
   { ssr: false }
 )
 
@@ -23,9 +28,10 @@ export default function ResumePreviewClient({
   resume: TailoredResume
   profile: Profile
 }) {
-  const [showSummary, setShowSummary] = useState(true)
-
   const content = resume.tailored_content as TailoredContent
+
+  const [showSummary, setShowSummary] = useState(true)
+  const [includeCoverLetter, setIncludeCoverLetter] = useState(!!content.coverLetter)
   const suggestions = content.suggestions ?? []
 
   const getScoreVariant = (score: number | null) => {
@@ -59,31 +65,72 @@ export default function ResumePreviewClient({
           )}
         </div>
 
-        <PDFDownloadButton
-          content={content}
-          profile={profile}
-          jobTitle={resume.job_title}
-          showSummary={showSummary}
-        />
+        <div className="flex items-center gap-2">
+          {content.coverLetter && (
+            <CoverLetterDownloadButton
+              coverLetter={content.coverLetter}
+              profile={profile}
+              jobTitle={resume.job_title}
+            />
+          )}
+          <PDFDownloadButton
+            content={content}
+            profile={profile}
+            jobTitle={resume.job_title}
+            showSummary={showSummary}
+            includeCoverLetter={includeCoverLetter}
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3 space-y-6">
           <ResumePreview content={content} profile={profile} showSummary={showSummary} />
+
+          {content.coverLetter && includeCoverLetter && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <FileText className="size-4" />
+                  Cover Letter
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm whitespace-pre-line leading-relaxed">
+                  {content.coverLetter}
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         <div className="space-y-4">
           <Card>
             <CardContent>
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="show-summary"
-                  checked={showSummary}
-                  onCheckedChange={(checked) => setShowSummary(checked === true)}
-                />
-                <label htmlFor="show-summary" className="text-base cursor-pointer select-none">
-                  Include professional summary
-                </label>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="show-summary"
+                    checked={showSummary}
+                    onCheckedChange={(checked) => setShowSummary(checked === true)}
+                  />
+                  <label htmlFor="show-summary" className="text-base cursor-pointer select-none">
+                    Include professional summary
+                  </label>
+                </div>
+                {content.coverLetter && (
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="include-cover-letter"
+                      checked={includeCoverLetter}
+                      onCheckedChange={(checked) => setIncludeCoverLetter(checked === true)}
+                    />
+                    <label htmlFor="include-cover-letter" className="text-base cursor-pointer select-none flex items-center gap-1.5">
+                      <FileText className="size-3.5 text-muted-foreground" />
+                      Include cover letter in PDF
+                    </label>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

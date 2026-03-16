@@ -3,7 +3,11 @@
 import { updateTag } from "next/cache";
 import { createClient } from "@/services/supabase/server";
 import { getAnthropicClient } from "@/lib/claude/client";
-import { SYSTEM_PROMPT, buildUserMessage } from "@/lib/claude/prompts";
+import {
+  SYSTEM_PROMPT,
+  COVER_LETTER_ADDENDUM,
+  buildUserMessage,
+} from "@/lib/claude/prompts";
 import type { Profile } from "@/types/database";
 
 async function getCurrentUserId() {
@@ -209,8 +213,10 @@ export async function tailorResume(input: {
   job_description: string;
   job_title?: string;
   company_name?: string;
+  include_cover_letter?: boolean;
 }): Promise<{ id: string }> {
-  const { job_description, job_title, company_name } = input;
+  const { job_description, job_title, company_name, include_cover_letter } =
+    input;
 
   if (!job_description || job_description.length < 50) {
     throw new Error("Job description must be at least 50 characters");
@@ -255,11 +261,15 @@ export async function tailorResume(input: {
   );
 
   // Call Claude API
+  const systemPrompt = include_cover_letter
+    ? SYSTEM_PROMPT + COVER_LETTER_ADDENDUM
+    : SYSTEM_PROMPT;
+
   const anthropic = getAnthropicClient();
   const response = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",
-    max_tokens: 4096,
-    system: SYSTEM_PROMPT,
+    max_tokens: include_cover_letter ? 8192 : 4096,
+    system: systemPrompt,
     messages: [{ role: "user", content: userMessage }],
   });
 

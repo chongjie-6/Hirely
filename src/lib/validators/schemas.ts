@@ -46,6 +46,7 @@ export const tailorSchema = z.object({
   job_description: z.string().min(50, 'Job description must be at least 50 characters'),
   job_title: z.string().optional().or(z.literal('')),
   company_name: z.string().optional().or(z.literal('')),
+  include_cover_letter: z.boolean().optional(),
 })
 
 export type ProfileFormData = z.infer<typeof profileSchema>

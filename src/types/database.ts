@@ -84,6 +84,7 @@ export interface TailoredContent {
   education: TailoredEducation[]
   sectionOrder: string[]
   suggestions: string[]
+  coverLetter?: string
 }
 
 export interface TailoredExperience {

@@ -61,6 +61,23 @@ Respond ONLY with valid JSON matching this exact schema:
   "matchScore": 75
 }`
 
+export const COVER_LETTER_ADDENDUM = `
+
+Additionally, generate a professional cover letter for this job application. The cover letter should:
+1. Be 3-4 paragraphs long.
+2. Open with a compelling introduction that mentions the specific role and company.
+3. Highlight the candidate's most relevant experience and skills that match the job requirements.
+4. Show enthusiasm for the role and company.
+5. Close with a professional sign-off paragraph.
+6. Use a professional but personable tone — avoid generic filler phrases.
+7. NEVER fabricate experience or qualifications the candidate does not have.
+
+Include the cover letter in your JSON response as a "coverLetter" field inside "tailoredContent":
+"tailoredContent": {
+  ...existing fields...,
+  "coverLetter": "Dear Hiring Manager,\\n\\n...full cover letter text..."
+}`
+
 export function buildUserMessage(
   jobDescription: string,
   profile: Profile,
