@@ -1,6 +1,6 @@
 import { unstable_cache } from 'next/cache'
 import { createClient } from '@/services/supabase/server'
-import type { Profile, Experience, Education, Skill, Project, TailoredResume } from '@/types/database'
+import type { Profile, Experience, Education, Skill, Project, TailoredResume, ApplicationWithResume } from '@/types/database'
 
 async function getSupabaseAndUserId() {
   const supabase = await createClient()
@@ -118,5 +118,21 @@ export async function getTailoredResume(id: string): Promise<TailoredResume | nu
     },
     [`resume-${id}`],
     { tags: ['resumes', `resume-${id}`] }
+  )()
+}
+
+export async function getApplicationsWithResumes(): Promise<ApplicationWithResume[]> {
+  const { supabase, userId } = await getSupabaseAndUserId()
+  return unstable_cache(
+    async () => {
+      const { data } = await supabase
+        .from('applications')
+        .select('*, tailored_resume:tailored_resumes(id, job_title, company_name, match_score)')
+        .eq('user_id', userId)
+        .order('sort_order', { ascending: true })
+      return (data ?? []) as ApplicationWithResume[]
+    },
+    [`applications-${userId}`],
+    { tags: ['applications'] }
   )()
 }

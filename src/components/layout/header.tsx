@@ -16,6 +16,7 @@ import {
   Wrench,
   FolderOpen,
   Sparkles,
+  KanbanSquare,
   LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -28,6 +29,7 @@ const navItems = [
   { href: '/skills', label: 'Skills', icon: Wrench },
   { href: '/projects', label: 'Projects', icon: FolderOpen },
   { href: '/tailor', label: 'Tailor Resume', icon: Sparkles },
+  { href: '/tracker', label: 'Tracker', icon: KanbanSquare },
 ]
 
 export default function Header() {

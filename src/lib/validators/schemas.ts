@@ -49,9 +49,23 @@ export const tailorSchema = z.object({
   include_cover_letter: z.boolean().optional(),
 })
 
+export const applicationSchema = z.object({
+  job_title: z.string().min(1, 'Job title is required'),
+  company_name: z.string().min(1, 'Company name is required'),
+  status: z.enum(['applied', 'phone_screen', 'interview', 'offer', 'rejected']).optional(),
+  applied_date: z.string().optional().or(z.literal('')),
+  notes: z.string().optional().or(z.literal('')),
+  url: z.string().url('Invalid URL').optional().or(z.literal('')),
+  salary: z.string().optional().or(z.literal('')),
+  contact_name: z.string().optional().or(z.literal('')),
+  contact_email: z.string().email('Invalid email').optional().or(z.literal('')),
+  tailored_resume_id: z.string().optional().or(z.literal('')),
+})
+
 export type ProfileFormData = z.infer<typeof profileSchema>
 export type ExperienceFormData = z.infer<typeof experienceSchema>
 export type EducationFormData = z.infer<typeof educationSchema>
 export type SkillFormData = z.infer<typeof skillSchema>
 export type ProjectFormData = z.infer<typeof projectSchema>
 export type TailorFormData = z.infer<typeof tailorSchema>
+export type ApplicationFormData = z.infer<typeof applicationSchema>

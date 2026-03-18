@@ -124,3 +124,45 @@ export interface TailoredEducation {
   gpa: string | null
   description: string | null
 }
+
+// --- Application Tracker ---
+
+export type ApplicationStatus = 'applied' | 'phone_screen' | 'interview' | 'offer' | 'rejected'
+
+export const APPLICATION_STATUSES: ApplicationStatus[] = [
+  'applied',
+  'phone_screen',
+  'interview',
+  'offer',
+  'rejected',
+]
+
+export const STATUS_LABELS: Record<ApplicationStatus, string> = {
+  applied: 'Applied',
+  phone_screen: 'Phone Screen',
+  interview: 'Interview',
+  offer: 'Offer',
+  rejected: 'Rejected',
+}
+
+export interface Application {
+  id: string
+  user_id: string
+  job_title: string
+  company_name: string
+  status: ApplicationStatus
+  applied_date: string | null
+  notes: string | null
+  url: string | null
+  salary: string | null
+  contact_name: string | null
+  contact_email: string | null
+  tailored_resume_id: string | null
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export interface ApplicationWithResume extends Application {
+  tailored_resume: Pick<TailoredResume, 'id' | 'job_title' | 'company_name' | 'match_score'> | null
+}
