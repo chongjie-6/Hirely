@@ -1,14 +1,19 @@
-import type { TailoredContent, Profile } from '@/types/database'
+import type { TailoredContent, Profile, OriginalResumeData } from '@/types/database'
 import { formatDateRange } from '@/lib/utils'
+import { computeWordDiff, computeListDiff } from '@/lib/diff'
+import { DiffText, DiffSkillList } from '@/components/resume/diff-text'
 
 interface ResumePreviewProps {
   content: TailoredContent
   profile: Profile
   showSummary?: boolean
+  showDiff?: boolean
+  originalData?: OriginalResumeData
   renderSectionWrapper?: (sectionKey: string, children: React.ReactNode) => React.ReactNode
 }
 
-export default function ResumePreview({ content, profile, showSummary = true, renderSectionWrapper }: ResumePreviewProps) {
+export default function ResumePreview({ content, profile, showSummary = true, showDiff = false, originalData, renderSectionWrapper }: ResumePreviewProps) {
+  const diffEnabled = showDiff && !!originalData
   const renderSection = (sectionKey: string) => {
     switch (sectionKey) {
       case 'summary':
@@ -17,7 +22,11 @@ export default function ResumePreview({ content, profile, showSummary = true, re
             <h2 className="text-base font-bold text-gray-900 uppercase tracking-wider border-b border-gray-300 pb-1 mb-2">
               Professional Summary
             </h2>
-            <p className="text-base text-gray-700 leading-relaxed">{content.summary}</p>
+            <p className="text-base text-gray-700 leading-relaxed">
+              {diffEnabled
+                ? <DiffText segments={computeWordDiff(originalData!.summary ?? '', content.summary)} />
+                : content.summary}
+            </p>
           </section>
         ) : null
 
@@ -38,7 +47,12 @@ export default function ResumePreview({ content, profile, showSummary = true, re
                 <p className="text-base text-gray-600 italic">{exp.company}</p>
                 {exp.description && (
                   <div className="mt-1 text-base text-gray-700 whitespace-pre-line leading-relaxed">
-                    {exp.description}
+                    {diffEnabled
+                      ? <DiffText segments={computeWordDiff(
+                          originalData!.experiences.find(o => o.id === exp.id)?.description ?? '',
+                          exp.description
+                        )} />
+                      : exp.description}
                   </div>
                 )}
               </div>
@@ -66,7 +80,14 @@ export default function ResumePreview({ content, profile, showSummary = true, re
                 </div>
                 <p className="text-base text-gray-600">{edu.school}{edu.gpa ? ` · GPA: ${edu.gpa}` : ''}</p>
                 {edu.description && (
-                  <p className="mt-1 text-base text-gray-700">{edu.description}</p>
+                  <p className="mt-1 text-base text-gray-700">
+                    {diffEnabled
+                      ? <DiffText segments={computeWordDiff(
+                          originalData!.education.find(o => o.id === edu.id)?.description ?? '',
+                          edu.description
+                        )} />
+                      : edu.description}
+                  </p>
                 )}
               </div>
             ))}
@@ -80,14 +101,30 @@ export default function ResumePreview({ content, profile, showSummary = true, re
               Skills
             </h2>
             {content.skills.technical?.length > 0 && (
-              <p className="text-base text-gray-700">
-                <span className="font-medium">Technical:</span> {content.skills.technical.join(', ')}
-              </p>
+              diffEnabled
+                ? <DiffSkillList
+                    label="Technical"
+                    items={computeListDiff(
+                      originalData!.skills.filter(s => s.category === 'technical').map(s => s.name),
+                      content.skills.technical
+                    )}
+                  />
+                : <p className="text-base text-gray-700">
+                    <span className="font-medium">Technical:</span> {content.skills.technical.join(', ')}
+                  </p>
             )}
             {content.skills.soft?.length > 0 && (
-              <p className="text-base text-gray-700 mt-1">
-                <span className="font-medium">Soft Skills:</span> {content.skills.soft.join(', ')}
-              </p>
+              diffEnabled
+                ? <DiffSkillList
+                    label="Soft Skills"
+                    items={computeListDiff(
+                      originalData!.skills.filter(s => s.category === 'soft').map(s => s.name),
+                      content.skills.soft
+                    )}
+                  />
+                : <p className="text-base text-gray-700 mt-1">
+                    <span className="font-medium">Soft Skills:</span> {content.skills.soft.join(', ')}
+                  </p>
             )}
           </section>
         ) : null
@@ -109,7 +146,14 @@ export default function ResumePreview({ content, profile, showSummary = true, re
                   )}
                 </div>
                 {proj.description && (
-                  <p className="text-base text-gray-700 mt-0.5">{proj.description}</p>
+                  <p className="text-base text-gray-700 mt-0.5">
+                    {diffEnabled
+                      ? <DiffText segments={computeWordDiff(
+                          originalData!.projects.find(o => o.id === proj.id)?.description ?? '',
+                          proj.description
+                        )} />
+                      : proj.description}
+                  </p>
                 )}
               </div>
             ))}

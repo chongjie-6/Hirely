@@ -62,6 +62,14 @@ export interface Project {
   updated_at: string
 }
 
+export interface OriginalResumeData {
+  summary: string | null
+  experiences: Experience[]
+  education: Education[]
+  skills: Skill[]
+  projects: Project[]
+}
+
 export interface TailoredResume {
   id: string
   user_id: string

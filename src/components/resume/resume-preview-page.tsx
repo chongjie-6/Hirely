@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import type { TailoredResume, Profile, TailoredContent } from '@/types/database'
+import type { TailoredResume, Profile, TailoredContent, OriginalResumeData } from '@/types/database'
 import ResumePreview from '@/components/resume/resume-preview'
 import { SortableSection } from '@/components/resume/sortable-section'
 import { updateResumeSectionOrder } from '@/services/actions'
@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { ArrowLeft, Lightbulb, FileText, RotateCcw } from 'lucide-react'
+import { ArrowLeft, Lightbulb, FileText, RotateCcw, GitCompareArrows } from 'lucide-react'
 
 const PDFDownloadButton = dynamic(
   () => import('@/components/resume/pdf-download-button'),
@@ -29,9 +29,11 @@ const CoverLetterDownloadButton = dynamic(
 export default function ResumePreviewClient({
   resume,
   profile,
+  originalData,
 }: {
   resume: TailoredResume
   profile: Profile
+  originalData: OriginalResumeData
 }) {
   const content = resume.tailored_content as TailoredContent
   const defaultOrder = content.sectionOrder ?? ['summary', 'experience', 'skills', 'projects', 'education']
@@ -39,6 +41,7 @@ export default function ResumePreviewClient({
   const [showSummary, setShowSummary] = useState(true)
   const [includeCoverLetter, setIncludeCoverLetter] = useState(!!content.coverLetter)
   const [sectionOrder, setSectionOrder] = useState<string[]>(defaultOrder)
+  const [showDiff, setShowDiff] = useState(false)
   const suggestions = content.suggestions ?? []
 
   const sensors = useSensors(
@@ -124,6 +127,8 @@ export default function ResumePreviewClient({
                 content={contentWithOrder}
                 profile={profile}
                 showSummary={showSummary}
+                showDiff={showDiff}
+                originalData={originalData}
                 renderSectionWrapper={(key, children) => (
                   <SortableSection key={key} id={key}>{children}</SortableSection>
                 )}
@@ -173,6 +178,29 @@ export default function ResumePreviewClient({
                       <FileText className="size-3.5 text-muted-foreground" />
                       Include cover letter in PDF
                     </label>
+                  </div>
+                )}
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="show-diff"
+                    checked={showDiff}
+                    onCheckedChange={(checked) => setShowDiff(checked === true)}
+                  />
+                  <label htmlFor="show-diff" className="text-base cursor-pointer select-none flex items-center gap-1.5">
+                    <GitCompareArrows className="size-3.5 text-muted-foreground" />
+                    Show changes
+                  </label>
+                </div>
+                {showDiff && (
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground pl-6">
+                    <span className="flex items-center gap-1">
+                      <span className="inline-block size-2 rounded-full bg-green-400" />
+                      Added
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="inline-block size-2 rounded-full bg-red-400" />
+                      Removed
+                    </span>
                   </div>
                 )}
                 <div className="pt-2 border-t">
