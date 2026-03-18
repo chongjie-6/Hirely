@@ -1,15 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import type { TailoredResume, Profile, TailoredContent } from '@/types/database'
 import ResumePreview from '@/components/resume/resume-preview'
+import { SortableSection } from '@/components/resume/sortable-section'
+import { updateResumeSectionOrder } from '@/services/actions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { ArrowLeft, Lightbulb, FileText } from 'lucide-react'
+import { ArrowLeft, Lightbulb, FileText, RotateCcw } from 'lucide-react'
 
 const PDFDownloadButton = dynamic(
   () => import('@/components/resume/pdf-download-button'),
@@ -29,10 +34,38 @@ export default function ResumePreviewClient({
   profile: Profile
 }) {
   const content = resume.tailored_content as TailoredContent
+  const defaultOrder = content.sectionOrder ?? ['summary', 'experience', 'skills', 'projects', 'education']
 
   const [showSummary, setShowSummary] = useState(true)
   const [includeCoverLetter, setIncludeCoverLetter] = useState(!!content.coverLetter)
+  const [sectionOrder, setSectionOrder] = useState<string[]>(defaultOrder)
   const suggestions = content.suggestions ?? []
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  )
+
+  const contentWithOrder: TailoredContent = { ...content, sectionOrder }
+
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+
+    setSectionOrder((prev) => {
+      const oldIndex = prev.indexOf(active.id as string)
+      const newIndex = prev.indexOf(over.id as string)
+      const newOrder = arrayMove(prev, oldIndex, newIndex)
+      updateResumeSectionOrder(resume.id, newOrder).catch(console.error)
+      return newOrder
+    })
+  }, [resume.id])
+
+  const handleResetOrder = useCallback(() => {
+    const reset = ['summary', 'experience', 'skills', 'projects', 'education']
+    setSectionOrder(reset)
+    updateResumeSectionOrder(resume.id, reset).catch(console.error)
+  }, [resume.id])
 
   const getScoreVariant = (score: number | null) => {
     if (!score) return 'secondary' as const
@@ -74,7 +107,7 @@ export default function ResumePreviewClient({
             />
           )}
           <PDFDownloadButton
-            content={content}
+            content={contentWithOrder}
             profile={profile}
             jobTitle={resume.job_title}
             showSummary={showSummary}
@@ -85,7 +118,18 @@ export default function ResumePreviewClient({
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-3 space-y-6">
-          <ResumePreview content={content} profile={profile} showSummary={showSummary} />
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
+              <ResumePreview
+                content={contentWithOrder}
+                profile={profile}
+                showSummary={showSummary}
+                renderSectionWrapper={(key, children) => (
+                  <SortableSection key={key} id={key}>{children}</SortableSection>
+                )}
+              />
+            </SortableContext>
+          </DndContext>
 
           {content.coverLetter && includeCoverLetter && (
             <Card>
@@ -131,6 +175,15 @@ export default function ResumePreviewClient({
                     </label>
                   </div>
                 )}
+                <div className="pt-2 border-t">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Drag sections on the preview to reorder them.
+                  </p>
+                  <Button variant="ghost" size="sm" onClick={handleResetOrder} className="gap-1.5">
+                    <RotateCcw className="size-3" />
+                    Reset order
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

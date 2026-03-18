@@ -5,9 +5,10 @@ interface ResumePreviewProps {
   content: TailoredContent
   profile: Profile
   showSummary?: boolean
+  renderSectionWrapper?: (sectionKey: string, children: React.ReactNode) => React.ReactNode
 }
 
-export default function ResumePreview({ content, profile, showSummary = true }: ResumePreviewProps) {
+export default function ResumePreview({ content, profile, showSummary = true, renderSectionWrapper }: ResumePreviewProps) {
   const renderSection = (sectionKey: string) => {
     switch (sectionKey) {
       case 'summary':
@@ -149,7 +150,11 @@ export default function ResumePreview({ content, profile, showSummary = true }: 
       </div>
 
       {/* Sections in tailored order */}
-      {sectionOrder.map(section => renderSection(section))}
+      {sectionOrder.map(section => {
+        const node = renderSection(section)
+        if (!node) return null
+        return renderSectionWrapper ? renderSectionWrapper(section, node) : node
+      })}
     </div>
   )
 }

@@ -196,6 +196,36 @@ export async function deleteProject(id: string) {
   updateTag("projects");
 }
 
+// --- Tailored Resumes (Section Order) ---
+
+export async function updateResumeSectionOrder(
+  resumeId: string,
+  sectionOrder: string[],
+) {
+  const supabase = await createClient();
+
+  const { data: resume, error: fetchError } = await supabase
+    .from("tailored_resumes")
+    .select("tailored_content")
+    .eq("id", resumeId)
+    .single();
+
+  if (fetchError) throw fetchError;
+
+  const updatedContent = {
+    ...(resume.tailored_content as Record<string, unknown>),
+    sectionOrder,
+  };
+
+  const { error } = await supabase
+    .from("tailored_resumes")
+    .update({ tailored_content: updatedContent })
+    .eq("id", resumeId);
+
+  if (error) throw error;
+  updateTag("resumes");
+}
+
 // --- Tailored Resumes ---
 
 export async function deleteResume(id: string) {
