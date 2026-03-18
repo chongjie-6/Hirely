@@ -2,6 +2,11 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
+  // Skip middleware for the auth callback — the code exchange must happen
+  // before any getUser() call, otherwise PKCE cookies can be cleared
+  if (request.nextUrl.pathname.startsWith('/auth/callback')) {
+    return NextResponse.next()
+  }
   let supabaseResponse = NextResponse.next({
     request,
   })
