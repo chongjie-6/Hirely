@@ -43,12 +43,15 @@ export default function Sidebar() {
   return (
     <aside className="hidden md:flex md:flex-col md:w-72 bg-card border-r border-border min-h-screen">
       <div className="p-6">
-        <Link href="/dashboard" className="text-4xl font-bold text-primary transition-colors duration-150 hover:text-white">
+        <Link
+          href="/dashboard"
+          className="text-4xl font-bold text-primary transition-colors duration-150 hover:text-white"
+        >
           Hirely
         </Link>
       </div>
 
-      <nav className="flex-1 px-3 space-y-5">
+      <nav className="flex-1 flex flex-col gap-2 px-3">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
