@@ -34,7 +34,7 @@ export default function SignupForm() {
     setLoading(true)
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -48,7 +48,13 @@ export default function SignupForm() {
       return
     }
 
-    router.push('/dashboard')
+    if (data.user?.identities?.length === 0) {
+      toast.error("An account with this email already exists.")
+      setLoading(false)
+      return
+    }
+
+    router.push('/email-confirmation')
     router.refresh()
   }
 
