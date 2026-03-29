@@ -7,8 +7,8 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy, arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import type { TailoredResume, Profile, TailoredContent, OriginalResumeData } from '@/types/database'
-import ResumePreview from '@/components/resume/resume-preview'
-import { SortableSection } from '@/components/resume/sortable-section'
+import ResumePreview from '@/components/resume/ResumePreview'
+import { SortableSection } from '@/components/resume/SortableSection'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -17,12 +17,12 @@ import { ArrowLeft, Lightbulb, FileText, RotateCcw, GitCompareArrows } from 'luc
 import { updateResumeSectionOrder } from '@/services/resumes/action'
 
 const PDFDownloadButton = dynamic(
-  () => import('@/components/resume/pdf-download-button'),
+  () => import('@/components/resume/PdfDownloadButton'),
   { ssr: false }
 )
 
 const CoverLetterDownloadButton = dynamic(
-  () => import('@/components/resume/cover-letter-download-button'),
+  () => import('@/components/resume/CoverLetterDownloadButton'),
   { ssr: false }
 )
 

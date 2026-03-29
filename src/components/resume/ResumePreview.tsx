@@ -1,7 +1,7 @@
 import type { TailoredContent, Profile, OriginalResumeData } from '@/types/database'
 import { formatDateRange } from '@/lib/utils'
 import { computeWordDiff, computeListDiff } from '@/lib/diff'
-import { DiffText, DiffSkillList } from '@/components/resume/diff-text'
+import { DiffText, DiffSkillList } from '@/components/resume/DiffText'
 
 interface ResumePreviewProps {
   content: TailoredContent

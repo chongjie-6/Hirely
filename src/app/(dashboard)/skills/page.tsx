@@ -1,5 +1,5 @@
 
-import SkillsList from '@/components/skills/skills-form'
+import SkillsList from '@/components/skills/SkillsForm'
 import { getSkills } from '@/services/skills/queries'
 
 export default async function SkillsPage() {

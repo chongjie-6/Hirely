@@ -2,7 +2,7 @@
 
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { ApplicationCard } from '@/components/tracker/application-card'
+import { ApplicationCard } from '@/components/tracker/ApplicationCard'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import type { ApplicationWithResume, ApplicationStatus } from '@/types/database'

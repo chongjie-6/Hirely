@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import ResumePreviewClient from '@/components/resume/resume-preview-page'
+import ResumePreviewClient from '@/components/resume/ResumePreviewPage'
 import { getTailoredResume } from '@/services/resumes/queries'
 import { getProfile } from '@/services/profile/queries'
 import { getExperiences } from '@/services/experiences/queries'

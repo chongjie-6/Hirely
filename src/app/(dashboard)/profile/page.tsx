@@ -1,5 +1,5 @@
 
-import ProfileForm from '@/components/profile/profile-form'
+import ProfileForm from '@/components/profile/ProfileForm'
 import { getProfile } from '@/services/profile/queries'
 
 export default async function ProfilePage() {

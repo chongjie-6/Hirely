@@ -1,5 +1,5 @@
 
-import ResumeList from '@/components/dashboard/resume-list'
+import ResumeList from '@/components/dashboard/ResumeList'
 import { getTailoredResumes } from '@/services/resumes/queries'
 
 export default async function DashboardPage() {

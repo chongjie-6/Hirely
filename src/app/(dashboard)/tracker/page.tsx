@@ -1,4 +1,4 @@
-import KanbanBoard from '@/components/tracker/kanban-board'
+import KanbanBoard from '@/components/tracker/KanbanBoard'
 import { getApplicationsWithResumes } from '@/services/applications/queries'
 import { getTailoredResumes } from '@/services/resumes/queries'
 

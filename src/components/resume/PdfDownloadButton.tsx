@@ -35,7 +35,7 @@ export default function PDFDownloadButton({ content, profile, jobTitle, showSumm
     setGenerating(true)
     try {
       const { pdf } = await import('@react-pdf/renderer')
-      const { default: ResumePDF } = await import('@/components/resume/resume-pdf')
+      const { default: ResumePDF } = await import('@/components/resume/ResumePdf')
 
       const blob = await pdf(<ResumePDF content={content} profile={profile} showSummary={showSummary} includeCoverLetter={includeCoverLetter} />).toBlob()
       const url = URL.createObjectURL(blob)

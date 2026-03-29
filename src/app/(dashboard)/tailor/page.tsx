@@ -1,4 +1,4 @@
-import TailorForm from '@/components/tailor/tailor-form'
+import TailorForm from '@/components/tailor/TailorForm'
 import { getEducation } from '@/services/education/queries'
 import { getExperiences } from '@/services/experiences/queries'
 import { getProfile } from '@/services/profile/queries'

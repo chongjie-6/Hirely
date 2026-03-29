@@ -33,7 +33,7 @@ export default function CoverLetterDownloadButton({ coverLetter, profile, jobTit
     setGenerating(true)
     try {
       const { pdf } = await import('@react-pdf/renderer')
-      const { default: CoverLetterPDF } = await import('@/components/resume/cover-letter-pdf')
+      const { default: CoverLetterPDF } = await import('@/components/resume/CoverLetterPdf')
 
       const blob = await pdf(<CoverLetterPDF coverLetter={coverLetter} profile={profile} />).toBlob()
       const url = URL.createObjectURL(blob)

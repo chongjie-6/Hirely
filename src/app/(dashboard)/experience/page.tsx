@@ -1,5 +1,5 @@
 
-import ExperienceList from '@/components/experience/experience-form'
+import ExperienceList from '@/components/experience/ExperienceForm'
 import { getExperiences } from '@/services/experiences/queries'
 
 export default async function ExperiencePage() {

@@ -1,5 +1,5 @@
 
-import EducationList from '@/components/education/education-form'
+import EducationList from '@/components/education/EducationForm'
 import { getEducation } from '@/services/education/queries'
 
 export default async function EducationPage() {
