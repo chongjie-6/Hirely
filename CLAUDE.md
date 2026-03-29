@@ -67,6 +67,18 @@ Cover letter is optional; increases max tokens from 4096 → 8192.
 
 Supabase Auth with email/password + Google OAuth. Session refresh runs in `middleware.ts` on every request. OAuth PKCE flow handled at `/app/(auth)/auth/callback/route.ts`.
 
+### Design System
+
+- **Framework**: Tailwind CSS v4 — utility-first, theme defined inline via `@theme` in `src/app/globals.css` (no `tailwind.config.ts`)
+- **Components**: shadcn/ui (`base-nova` style) backed by Base UI (`@base-ui/react`) headless primitives; all UI primitives in `src/components/ui/`
+- **Colors**: OKLCH color space with semantic CSS variables (`--primary`, `--secondary`, `--accent`, `--muted`, `--destructive`, etc.); dark monochromatic theme by default
+- **Typography**: Geist Mono for both sans and mono — intentional code-editor aesthetic
+- **Variants**: CVA (`class-variance-authority`) for component variant definitions; `cn()` (`clsx` + `tailwind-merge`) for class merging
+- **Icons**: Lucide React, Do not go overboard with emojis / icons use sparringly for effect. 
+- **Dark mode**: CSS variable overrides in `.dark {}`; supported app-wide via `next-themes`
+
+When building new UI, use existing shadcn/ui primitives and follow the established OKLCH color token system. Avoid hardcoded color values.
+
 ### Key Libraries
 
 - **UI**: shadcn/ui (Base Nova theme, `components.json`), Tailwind CSS 4, lucide-react
@@ -87,3 +99,6 @@ ANTHROPIC_API_KEY=
 ### Database Migrations
 
 SQL migrations are in `supabase/migrations/`. Run with the Supabase CLI (`supabase db push` or `supabase migration up`). Types are manually maintained in `src/types/database.ts`.
+
+### Commenting 
+Use comments sparringly, for simple functionality do not include any comments. For more complex workflows, include an inline comment only when necessary. 
