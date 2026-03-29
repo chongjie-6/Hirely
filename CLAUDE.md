@@ -26,15 +26,36 @@ No test suite is currently configured.
 
 **No ORM.** Direct Supabase client queries throughout.
 
-- **Mutations** → `src/services/actions.ts` (`"use server"` Server Actions)
-- **Reads** → `src/services/queries.ts` (cached with `unstable_cache` + revalidation tags)
+Each domain has its own service folder under `src/services/`:
+
+| Domain | Actions | Queries |
+|---|---|---|
+| `resumes` | `src/services/resumes/action.ts` | `src/services/resumes/queries.ts` |
+| `applications` | `src/services/applications/actions.ts` | `src/services/applications/queries.ts` |
+| `experiences` | `src/services/experiences/actions.ts` | `src/services/experiences/queries.ts` |
+| `education` | `src/services/education/actions.ts` | `src/services/education/queries.ts` |
+| `skills` | `src/services/skills/action.ts` | `src/services/skills/queries.ts` |
+| `projects` | `src/services/projects/action.ts` | `src/services/projects/queries.ts` |
+| `profile` | `src/services/profile/actions.ts` | `src/services/profile/queries.ts` |
+| `user` | `src/services/user/actions.ts` | `src/services/user/queries.ts` |
+
+- **Actions** — `"use server"` Server Actions (mutations)
+- **Queries** — cached reads with `unstable_cache` + revalidation tags
 - **Clients** → `src/services/supabase/server.ts` (Server Components/Actions), `src/services/supabase/client.ts` (Client Components)
+
+When adding new server mutations or reads, place them in the relevant domain service folder. Create a new domain folder if needed, following the same `actions.ts` / `queries.ts` pattern.
 
 All tables (`profiles`, `experiences`, `education`, `skills`, `projects`, `tailored_resumes`, `applications`) have Row-Level Security enabled — user data is isolated by `user_id`.
 
+### Naming Conventions
+
+- **Components** — PascalCase filenames and function names (e.g., `ResumeCard.tsx`, `JobApplicationBoard.tsx`). This applies to all files under `src/components/` and page/layout files under `src/app/`.
+- **Services** — camelCase function names within action/query files (e.g., `tailorResume`, `getApplications`).
+- **Utilities / lib** — camelCase filenames (e.g., `src/lib/diff.ts`, `src/lib/utils.ts`).
+
 ### AI Integration
 
-The core feature lives in `src/services/actions.ts::tailorResume()`:
+The core feature lives in `src/services/resumes/action.ts::tailorResume()`:
 1. Fetches all user resume data
 2. Calls Claude Haiku (`claude-haiku-4-5-20251001`) via `src/lib/claude/client.ts` singleton
 3. System prompt in `src/lib/claude/prompts.ts` — outputs structured JSON (tailored bullet points, match score 0–100, suggestions)
