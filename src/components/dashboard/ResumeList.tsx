@@ -46,12 +46,14 @@ export default function ResumeList({ resumes: initialResumes }: { resumes: Tailo
       </div>
 
       {resumes.length === 0 ? (
-        <Card>
-          <CardContent className="py-16 text-center">
-            <FileText className="size-12 mx-auto text-muted-foreground/30 mb-4" />
+        <Card className="border-dashed">
+          <CardContent className="py-20 text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-muted mb-5">
+              <FileText className="size-6 text-muted-foreground/50" />
+            </div>
             <h3 className="text-xl font-medium">No tailored resumes yet</h3>
-            <p className="text-muted-foreground mt-1 mb-6">
-              Paste a job description and let AI tailor your resume.
+            <p className="text-muted-foreground mt-1.5 mb-7 max-w-xs mx-auto text-sm leading-relaxed">
+              Paste a job description and let AI tailor your resume in seconds.
             </p>
             <Link href="/tailor">
               <Button>
@@ -63,7 +65,7 @@ export default function ResumeList({ resumes: initialResumes }: { resumes: Tailo
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {resumes.map((resume) => (
-            <Card key={resume.id} className="hover:ring-2 hover:ring-ring/20 transition-all">
+            <Card key={resume.id} className="hover:ring-2 hover:ring-primary/15 hover:border-primary/20 transition-all duration-200">
               <CardContent>
                 <div className="flex items-start justify-between">
                   <Link href={`/resume/${resume.id}`} className="flex-1">

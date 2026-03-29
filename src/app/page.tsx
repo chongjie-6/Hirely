@@ -29,6 +29,8 @@ export default function LandingPage() {
       <section className="relative overflow-hidden">
         {/* Gradient accent */}
         <div className="absolute inset-0 bg-linear-to-b from-primary/5 via-transparent to-transparent" />
+        {/* Radial glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-primary/4 blur-3xl rounded-full pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-6 pt-24 pb-16">
           <div className="max-w-4xl mx-auto text-center">
@@ -132,7 +134,7 @@ export default function LandingPage() {
                   className="relative scroll-slide-up"
                   style={{ animationDelay: `${350 * index}ms` }}
                 >
-                  <span className="text-6xl font-bold text-white absolute -top-8 -left-2">
+                  <span className="text-6xl font-bold text-foreground/30 absolute -top-8 -left-2">
                     {item.step}
                   </span>
                   <div className="relative pt-10">
@@ -177,15 +179,15 @@ export default function LandingPage() {
                 desc: "Get specific tips on how to strengthen your application for each role.",
               },
             ].map((feature) => (
-              <div
-                key={feature.title}
-                className="group p-6 rounded-xl border border-border/50 bg-card hover:border-primary/30 transition-colors"
-              >
-                <h3 className="font-semibold mb-2">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {feature.desc}
-                </p>
-              </div>
+                <div
+                  key={feature.title}
+                  className="group p-6 rounded-xl border border-border/50 bg-card hover:border-primary/20 transition-colors duration-200"
+                >
+                  <h3 className="font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </div>
             ))}
           </div>
         </div>

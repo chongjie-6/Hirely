@@ -60,7 +60,7 @@ export default function Sidebar() {
               <Button
                 variant="ghost"
                 className={cn(
-                  "w-full justify-start gap-3 transition-all duration-150 cursor-pointer",
+                  "group w-full justify-start gap-3 transition-all duration-150 cursor-pointer",
                   isActive
                     ? "bg-white/15 text-white font-semibold hover:bg-white/20 hover:text-white"
                     : "hover:bg-white/10 hover:text-white active:scale-[0.98]",
@@ -68,8 +68,8 @@ export default function Sidebar() {
               >
                 <Icon
                   className={cn(
-                    "size-5 transition-colors",
-                    isActive ? "text-primary" : "group-hover:text-foreground",
+                    "size-5 shrink-0 transition-colors",
+                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground",
                   )}
                 />
                 <span className="text-base font-semibold">{item.label}</span>
