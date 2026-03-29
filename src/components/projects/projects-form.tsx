@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { projectSchema, type ProjectFormData } from '@/lib/validators/schemas'
-import { addProject, updateProject, deleteProject } from '@/services/actions'
 import type { Project } from '@/types/database'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { Plus, Pencil, Trash2, X, ExternalLink, Loader2 } from 'lucide-react'
+import { addProject, deleteProject, updateProject } from '@/services/projects/action'
 
 export default function ProjectsList({ projects: initialProjects }: { projects: Project[] }) {
   const [projects, setProjects] = useState(initialProjects)

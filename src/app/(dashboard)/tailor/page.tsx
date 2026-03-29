@@ -1,5 +1,9 @@
-import { getProfile, getExperiences, getEducation, getSkills, getProjects } from '@/services/queries'
 import TailorForm from '@/components/tailor/tailor-form'
+import { getEducation } from '@/services/education/queries'
+import { getExperiences } from '@/services/experiences/queries'
+import { getProfile } from '@/services/profile/queries'
+import { getProjects } from '@/services/projects/queries'
+import { getSkills } from '@/services/skills/queries'
 
 export default async function TailorPage() {
   const [profile, experiences, education, skills, projects] = await Promise.all([

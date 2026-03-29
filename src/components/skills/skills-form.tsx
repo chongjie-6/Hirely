@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { addSkill, deleteSkill } from '@/services/actions'
 import type { Skill } from '@/types/database'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
 import { X } from 'lucide-react'
+import { addSkill, deleteSkill } from '@/services/skills/action'
 
 export default function SkillsList({ skills: initialSkills }: { skills: Skill[] }) {
   const [skills, setSkills] = useState(initialSkills)

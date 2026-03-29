@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { tailorSchema, type TailorFormData } from '@/lib/validators/schemas'
-import { tailorResume } from '@/services/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -14,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { Sparkles, CheckCircle, AlertCircle, Loader2, FileText } from 'lucide-react'
+import { tailorResume } from '@/services/resumes/action'
 
 interface ResumeDataSummary {
   hasProfile: boolean

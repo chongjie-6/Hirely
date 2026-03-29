@@ -3,7 +3,6 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { applicationSchema, type ApplicationFormData } from '@/lib/validators/schemas'
-import { addApplication, updateApplication, deleteApplication } from '@/services/actions'
 import type { ApplicationWithResume, TailoredResume, ApplicationStatus } from '@/types/database'
 import { STATUS_LABELS } from '@/types/database'
 import {
@@ -20,6 +19,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
 import { Trash2 } from 'lucide-react'
+import { addApplication, deleteApplication, updateApplication } from '@/services/applications/actions'
 
 interface ApplicationFormDialogProps {
   open: boolean

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { deleteResume } from '@/services/actions'
+import { deleteResume } from '@/services/resumes/action'
 import type { TailoredResume } from '@/types/database'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'

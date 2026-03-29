@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { educationSchema, type EducationFormData } from '@/lib/validators/schemas'
-import { addEducation, updateEducation, deleteEducation } from '@/services/actions'
+
 import { formatDateRange } from '@/lib/utils'
 import type { Education } from '@/types/database'
 import { Button } from '@/components/ui/button'
@@ -15,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { MonthPicker } from '@/components/ui/month-picker'
 import { Plus, Pencil, Trash2, X, Loader2 } from 'lucide-react'
+import { addEducation, deleteEducation, updateEducation } from '@/services/education/actions'
 
 export default function EducationList({ education: initialEducation }: { education: Education[] }) {
   const [education, setEducation] = useState(initialEducation)

@@ -1,6 +1,12 @@
 import Link from 'next/link'
-import { getProfile, getTailoredResume, getExperiences, getEducation, getSkills, getProjects } from '@/services/queries'
+
 import ResumePreviewClient from '@/components/resume/resume-preview-page'
+import { getTailoredResume } from '@/services/resumes/queries'
+import { getProfile } from '@/services/profile/queries'
+import { getExperiences } from '@/services/experiences/queries'
+import { getEducation } from '@/services/education/queries'
+import { getSkills } from '@/services/skills/queries'
+import { getProjects } from '@/services/projects/queries'
 
 export default async function ResumePreviewPage({
   params,

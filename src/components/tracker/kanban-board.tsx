@@ -15,7 +15,6 @@ import {
 import type { DragStartEvent, DragOverEvent, DragEndEvent } from '@dnd-kit/core'
 import { sortableKeyboardCoordinates, arrayMove } from '@dnd-kit/sortable'
 import { useRouter } from 'next/navigation'
-import { reorderApplications } from '@/services/actions'
 import { KanbanColumn } from '@/components/tracker/kanban-column'
 import { ApplicationCardOverlay } from '@/components/tracker/application-card-overlay'
 import { ApplicationFormDialog } from '@/components/tracker/application-form-dialog'
@@ -23,6 +22,7 @@ import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 import type { ApplicationWithResume, ApplicationStatus, TailoredResume } from '@/types/database'
 import { APPLICATION_STATUSES } from '@/types/database'
+import { reorderApplications } from '@/services/applications/actions'
 
 interface KanbanBoardProps {
   applications: ApplicationWithResume[]
