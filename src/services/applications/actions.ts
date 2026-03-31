@@ -1,3 +1,5 @@
+"use server";
+
 import { updateTag } from "next/cache";
 import { createClient } from "../supabase/server";
 import { getCurrentUserId } from "../user/queries";
@@ -25,7 +27,7 @@ export async function addApplication(app: Record<string, unknown>) {
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) throw new Error(error.message);
   updateTag("applications");
   return data;
 }
@@ -43,7 +45,7 @@ export async function updateApplication(
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) throw new Error(error.message);
   updateTag("applications");
   return data;
 }
@@ -52,7 +54,7 @@ export async function deleteApplication(id: string) {
   const supabase = await createClient();
 
   const { error } = await supabase.from("applications").delete().eq("id", id);
-  if (error) throw error;
+  if (error) throw new Error(error.message);
   updateTag("applications");
 }
 
@@ -67,7 +69,7 @@ export async function reorderApplications(
       .update({ status: item.status, sort_order: item.sort_order, updated_at: new Date().toISOString() })
       .eq("id", item.id);
 
-    if (error) throw error;
+    if (error) throw new Error(error.message);
   }
 
   updateTag("applications");

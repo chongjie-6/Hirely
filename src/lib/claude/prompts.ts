@@ -1,5 +1,11 @@
-import type { Profile, Experience, Education, Skill, Project } from '@/types/database'
-import { formatDateRange } from '@/lib/utils'
+import type {
+  Profile,
+  Experience,
+  Education,
+  Skill,
+  Project,
+} from "@/types/database";
+import { formatDateRange } from "@/lib/utils";
 
 export const SYSTEM_PROMPT = `You are a professional resume tailoring expert. Your job is to take a candidate's existing resume data and tailor it to match a specific job description.
 
@@ -59,7 +65,7 @@ Respond ONLY with valid JSON matching this exact schema:
     "suggestions": ["string"]
   },
   "matchScore": 75
-}`
+}`;
 
 export const COVER_LETTER_ADDENDUM = `
 
@@ -71,12 +77,13 @@ Additionally, generate a professional cover letter for this job application. The
 5. Close with a professional sign-off paragraph.
 6. Use a professional but personable tone — avoid generic filler phrases.
 7. NEVER fabricate experience or qualifications the candidate does not have.
+8. Use professional but natural sound language, this includes not using — dashes, contractions, and varying sentence structure to create a more engaging and human-like tone.
 
 Include the cover letter in your JSON response as a "coverLetter" field inside "tailoredContent":
 "tailoredContent": {
   ...existing fields...,
   "coverLetter": "Dear Hiring Manager,\\n\\n...full cover letter text..."
-}`
+}`;
 
 export function buildUserMessage(
   jobDescription: string,
@@ -84,58 +91,64 @@ export function buildUserMessage(
   experiences: Experience[],
   education: Education[],
   skills: Skill[],
-  projects: Project[]
+  projects: Project[],
 ): string {
-  const technicalSkills = skills.filter(s => s.category === 'technical').map(s => s.name)
-  const softSkills = skills.filter(s => s.category === 'soft').map(s => s.name)
+  const technicalSkills = skills
+    .filter((s) => s.category === "technical")
+    .map((s) => s.name);
+  const softSkills = skills
+    .filter((s) => s.category === "soft")
+    .map((s) => s.name);
 
-  let message = `## Job Description\n${jobDescription}\n\n## Candidate Resume Data\n\n`
+  let message = `## Job Description\n${jobDescription}\n\n## Candidate Resume Data\n\n`;
 
-  message += `### Personal Info\n`
-  message += `Name: ${profile.full_name || 'Not provided'}\n`
-  if (profile.summary) message += `Current Summary: ${profile.summary}\n`
-  message += '\n'
+  message += `### Personal Info\n`;
+  message += `Name: ${profile.full_name || "Not provided"}\n`;
+  if (profile.summary) message += `Current Summary: ${profile.summary}\n`;
+  message += "\n";
 
   if (experiences.length > 0) {
-    message += `### Work Experience\n`
+    message += `### Work Experience\n`;
     for (const exp of experiences) {
-      message += `**${exp.title}** at **${exp.company}** (${formatDateRange(exp.start_date, exp.end_date, exp.is_current)})\n`
-      message += `ID: ${exp.id}\n`
-      if (exp.description) message += `${exp.description}\n`
-      message += '\n'
+      message += `**${exp.title}** at **${exp.company}** (${formatDateRange(exp.start_date, exp.end_date, exp.is_current)})\n`;
+      message += `ID: ${exp.id}\n`;
+      if (exp.description) message += `${exp.description}\n`;
+      message += "\n";
     }
   }
 
   if (education.length > 0) {
-    message += `### Education\n`
+    message += `### Education\n`;
     for (const edu of education) {
-      message += `**${edu.degree || ''} ${edu.field_of_study ? `in ${edu.field_of_study}` : ''}** at **${edu.school}** (${formatDateRange(edu.start_date, edu.end_date)})\n`
-      message += `ID: ${edu.id}\n`
-      if (edu.gpa) message += `GPA: ${edu.gpa}\n`
-      if (edu.description) message += `${edu.description}\n`
-      message += '\n'
+      message += `**${edu.degree || ""} ${edu.field_of_study ? `in ${edu.field_of_study}` : ""}** at **${edu.school}** (${formatDateRange(edu.start_date, edu.end_date)})\n`;
+      message += `ID: ${edu.id}\n`;
+      if (edu.gpa) message += `GPA: ${edu.gpa}\n`;
+      if (edu.description) message += `${edu.description}\n`;
+      message += "\n";
     }
   }
 
   if (technicalSkills.length > 0 || softSkills.length > 0) {
-    message += `### Skills\n`
-    if (technicalSkills.length > 0) message += `Technical: ${technicalSkills.join(', ')}\n`
-    if (softSkills.length > 0) message += `Soft: ${softSkills.join(', ')}\n`
-    message += '\n'
+    message += `### Skills\n`;
+    if (technicalSkills.length > 0)
+      message += `Technical: ${technicalSkills.join(", ")}\n`;
+    if (softSkills.length > 0) message += `Soft: ${softSkills.join(", ")}\n`;
+    message += "\n";
   }
 
   if (projects.length > 0) {
-    message += `### Projects\n`
+    message += `### Projects\n`;
     for (const proj of projects) {
-      message += `**${proj.name}**\n`
-      message += `ID: ${proj.id}\n`
-      if (proj.description) message += `${proj.description}\n`
-      if (proj.technologies?.length > 0) message += `Technologies: ${proj.technologies.join(', ')}\n`
-      if (proj.live_url) message += `Live: ${proj.live_url}\n`
-      if (proj.repo_url) message += `Repo: ${proj.repo_url}\n`
-      message += '\n'
+      message += `**${proj.name}**\n`;
+      message += `ID: ${proj.id}\n`;
+      if (proj.description) message += `${proj.description}\n`;
+      if (proj.technologies?.length > 0)
+        message += `Technologies: ${proj.technologies.join(", ")}\n`;
+      if (proj.live_url) message += `Live: ${proj.live_url}\n`;
+      if (proj.repo_url) message += `Repo: ${proj.repo_url}\n`;
+      message += "\n";
     }
   }
 
-  return message
+  return message;
 }

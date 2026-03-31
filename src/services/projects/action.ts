@@ -1,3 +1,5 @@
+"use server";
+
 import { updateTag } from "next/cache";
 import { createClient } from "../supabase/server";
 import { getCurrentUserId } from "../user/queries";
@@ -12,7 +14,7 @@ export async function addProject(project: Record<string, unknown>) {
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) throw new Error(error.message);
   updateTag("projects");
   return data;
 }
@@ -30,7 +32,7 @@ export async function updateProject(
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) throw new Error(error.message);
   updateTag("projects");
   return data;
 }
@@ -39,6 +41,6 @@ export async function deleteProject(id: string) {
   const supabase = await createClient();
 
   const { error } = await supabase.from("projects").delete().eq("id", id);
-  if (error) throw error;
+  if (error) throw new Error(error.message);
   updateTag("projects");
 }

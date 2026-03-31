@@ -1,3 +1,5 @@
+"use server";
+
 import { updateTag } from "next/cache";
 import { createClient } from "../supabase/server";
 import { getCurrentUserId } from "../user/queries";
@@ -16,7 +18,7 @@ export async function updateProfile(updates: Partial<Profile>) {
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) throw new Error(error.message);
   updateTag("profile");
   return data;
 }

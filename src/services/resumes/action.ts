@@ -1,3 +1,5 @@
+"use server";
+
 import { updateTag } from "next/cache";
 import { createClient } from "../supabase/server";
 import { getCurrentUserId } from "../user/queries";
@@ -11,7 +13,7 @@ export async function deleteResume(id: string) {
     .from("tailored_resumes")
     .delete()
     .eq("id", id);
-  if (error) throw error;
+  if (error) throw new Error(error.message);
   updateTag("resumes");
 }
 
@@ -113,7 +115,7 @@ export async function tailorResume(input: {
     .select()
     .single();
 
-  if (saveError) throw saveError;
+  if (saveError) throw new Error(saveError.message);
 
   updateTag("resumes");
 
@@ -132,7 +134,7 @@ export async function updateResumeSectionOrder(
     .eq("id", resumeId)
     .single();
 
-  if (fetchError) throw fetchError;
+  if (fetchError) throw new Error(fetchError.message);
 
   const updatedContent = {
     ...(resume.tailored_content as Record<string, unknown>),
@@ -144,6 +146,6 @@ export async function updateResumeSectionOrder(
     .update({ tailored_content: updatedContent })
     .eq("id", resumeId);
 
-  if (error) throw error;
+  if (error) throw new Error(error.message);
   updateTag("resumes");
 }
